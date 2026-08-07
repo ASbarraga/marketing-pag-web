@@ -1,8 +1,3 @@
-// ==========================================================================
-// PC MASTERS - APP LOGIC (35 PRODUCTS, 7 CATEGORIES, CART & CHECKOUT)
-// ==========================================================================
-
-// Global Application State
 let state = {
   activeCategory: "Todas",
   searchQuery: "",
@@ -11,7 +6,6 @@ let state = {
   selectedProductForModal: null
 };
 
-// Available Categories List
 const CATEGORIES = [
   "Todas",
   "Tarjetas Gráficas",
@@ -23,7 +17,6 @@ const CATEGORIES = [
   "Laptops"
 ];
 
-// Initialize application on DOM ready
 document.addEventListener("DOMContentLoaded", () => {
   initNavigation();
   initCategories();
@@ -35,14 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
   refreshLucideIcons();
 });
 
-// Refresh Lucide SVG Icons
 function refreshLucideIcons() {
   if (window.lucide) {
     window.lucide.createIcons();
   }
 }
 
-// Show Floating Toast Notification
 function showToast(message) {
   const toast = document.getElementById("toast");
   const toastMsg = document.getElementById("toast-message");
@@ -56,9 +47,6 @@ function showToast(message) {
   }, 3000);
 }
 
-// ==========================================================================
-// SPA NAVIGATION CONTROLLER
-// ==========================================================================
 function initNavigation() {
   const navBtns = document.querySelectorAll(".nav-btn");
   const brandLogo = document.getElementById("btn-brand-logo");
@@ -72,7 +60,6 @@ function initNavigation() {
       targetView.classList.add("active");
     }
 
-    // Update nav active states
     navBtns.forEach(btn => {
       if (btn.dataset.target === targetViewId) {
         btn.classList.add("active");
@@ -103,7 +90,6 @@ function initNavigation() {
     });
   }
 
-  // Back to cart button from checkout
   const btnBackCart = document.getElementById("btn-back-to-cart");
   if (btnBackCart) {
     btnBackCart.addEventListener("click", () => {
@@ -111,7 +97,6 @@ function initNavigation() {
     });
   }
 
-  // Proceed to checkout button from cart
   const btnProceedCheckout = document.getElementById("btn-proceed-checkout");
   if (btnProceedCheckout) {
     btnProceedCheckout.addEventListener("click", () => {
@@ -124,9 +109,6 @@ function initNavigation() {
   }
 }
 
-// ==========================================================================
-// CATEGORIES BAR CONTROLLER
-// ==========================================================================
 function initCategories() {
   const container = document.getElementById("categories-container");
   if (!container) return;
@@ -137,7 +119,6 @@ function initCategories() {
     const pill = document.createElement("button");
     pill.className = `category-pill ${cat === state.activeCategory ? "active" : ""}`;
     
-    // Count products in this category
     const count = cat === "Todas" ? PRODUCTS_DATA.length : PRODUCTS_DATA.filter(p => p.category === cat).length;
     
     pill.innerHTML = `<span>${cat}</span> <span style="font-size: 11px; opacity: 0.8; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 10px;">${count}</span>`;
@@ -153,9 +134,6 @@ function initCategories() {
   });
 }
 
-// ==========================================================================
-// SEARCH AND SORT CONTROLLER
-// ==========================================================================
 function initSearchAndSort() {
   const searchInput = document.getElementById("search-input");
   const sortSelect = document.getElementById("sort-select");
@@ -175,7 +153,6 @@ function initSearchAndSort() {
   }
 }
 
-// Filter and Sort Helper
 function getFilteredProducts() {
   return PRODUCTS_DATA.filter(prod => {
     const matchesCategory = state.activeCategory === "Todas" || prod.category === state.activeCategory;
@@ -187,13 +164,10 @@ function getFilteredProducts() {
     if (state.sortBy === "price-low") return a.price - b.price;
     if (state.sortBy === "price-high") return b.price - a.price;
     if (state.sortBy === "rating") return b.rating - a.rating;
-    return b.reviewsCount - a.reviewsCount; // popular
+    return b.reviewsCount - a.reviewsCount;
   });
 }
 
-// ==========================================================================
-// CATALOG RENDERER
-// ==========================================================================
 function renderCatalog() {
   const grid = document.getElementById("products-grid");
   const countNum = document.getElementById("products-count-number");
@@ -220,7 +194,6 @@ function renderCatalog() {
     const card = document.createElement("div");
     card.className = "product-card";
 
-    // Format stars HTML
     const fullStars = Math.floor(prod.rating);
     let starsHtml = "";
     for (let i = 0; i < 5; i++) {
@@ -231,7 +204,6 @@ function renderCatalog() {
       }
     }
 
-    // Mini specs preview
     const firstSpec = Object.entries(prod.specs)[0];
     const specPreview = firstSpec ? `${firstSpec[0]}: ${firstSpec[1]}` : "";
 
@@ -263,13 +235,11 @@ function renderCatalog() {
       </div>
     `;
 
-    // Add to cart event
     card.querySelector(".btn-add-cart").addEventListener("click", (e) => {
       e.stopPropagation();
       addToCart(prod);
     });
 
-    // Open detail modal event
     card.querySelector(".btn-detail-card").addEventListener("click", (e) => {
       e.stopPropagation();
       openProductModal(prod);
@@ -285,9 +255,6 @@ function renderCatalog() {
   refreshLucideIcons();
 }
 
-// ==========================================================================
-// CART LOGIC & RENDERER
-// ==========================================================================
 function addToCart(product) {
   const existingIndex = state.cart.findIndex(item => item.product.id === product.id);
 
@@ -419,9 +386,6 @@ function updateCheckoutTotalBtn() {
   }
 }
 
-// ==========================================================================
-// 3D CHECKOUT CARD & PAYMENT SIMULATOR
-// ==========================================================================
 function initCheckoutCardInteraction() {
   const card3d = document.getElementById("credit-card-3d");
   const inputNumber = document.getElementById("card-number");
@@ -436,10 +400,9 @@ function initCheckoutCardInteraction() {
 
   const form = document.getElementById("checkout-form");
 
-  // Number input formatter
   if (inputNumber) {
     inputNumber.addEventListener("input", (e) => {
-      let value = e.target.value.replace(/\D/g, ""); // digits only
+      let value = e.target.value.replace(/\D/g, "");
       value = value.substring(0, 16);
       let formatted = value.match(/.{1,4}/g)?.join(" ") || "";
       e.target.value = formatted;
@@ -447,7 +410,6 @@ function initCheckoutCardInteraction() {
     });
   }
 
-  // Name input
   if (inputName) {
     inputName.addEventListener("input", (e) => {
       let value = e.target.value.toUpperCase();
@@ -455,7 +417,6 @@ function initCheckoutCardInteraction() {
     });
   }
 
-  // Expiry input (MM/YY)
   if (inputExpiry) {
     inputExpiry.addEventListener("input", (e) => {
       let value = e.target.value.replace(/\D/g, "").substring(0, 4);
@@ -467,7 +428,6 @@ function initCheckoutCardInteraction() {
     });
   }
 
-  // CVV input flip effect
   if (inputCvv) {
     inputCvv.addEventListener("focus", () => {
       if (card3d) card3d.classList.add("flipped");
@@ -482,7 +442,6 @@ function initCheckoutCardInteraction() {
     });
   }
 
-  // Form Submit Handler
   if (form) {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -500,7 +459,6 @@ function initCheckoutCardInteraction() {
       }
 
       setTimeout(() => {
-        // Complete transaction
         const totals = calculateCartTotals();
         const randomReceiptId = "#PCM-" + Math.floor(100000 + Math.random() * 900000);
         const todayDate = new Date().toLocaleDateString("es-ES", { year: "numeric", month: "long", day: "numeric" });
@@ -509,7 +467,6 @@ function initCheckoutCardInteraction() {
         document.getElementById("receipt-date").textContent = todayDate;
         document.getElementById("receipt-total").textContent = `$${totals.total.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
 
-        // Clear cart
         state.cart = [];
         saveCart();
         updateCartBadge();
@@ -519,14 +476,12 @@ function initCheckoutCardInteraction() {
           submitBtn.innerHTML = `<i data-lucide="shield-check"></i> Pagar $<span id="checkout-btn-total">0.00</span>`;
         }
 
-        // Reset form inputs
         form.reset();
         if (previewNumber) previewNumber.textContent = "•••• •••• •••• ••••";
         if (previewName) previewName.textContent = "NOMBRE COMPLETO";
         if (previewExpiry) previewExpiry.textContent = "MM/YY";
         if (previewCvv) previewCvv.textContent = "•••";
 
-        // Open Receipt Modal
         const receiptModal = document.getElementById("receipt-modal");
         if (receiptModal) receiptModal.classList.add("active");
         refreshLucideIcons();
@@ -535,11 +490,7 @@ function initCheckoutCardInteraction() {
   }
 }
 
-// ==========================================================================
-// MODALS LOGIC
-// ==========================================================================
 function initModals() {
-  // Detail Modal Close
   const detailModal = document.getElementById("detail-modal");
   const btnCloseDetail = document.getElementById("btn-close-detail-modal");
 
@@ -552,7 +503,6 @@ function initModals() {
     });
   }
 
-  // Receipt Modal Close
   const receiptModal = document.getElementById("receipt-modal");
   const btnCloseReceipt = document.getElementById("btn-close-receipt");
 
@@ -576,7 +526,6 @@ function openProductModal(prod) {
   document.getElementById("modal-product-stock").textContent = prod.stock;
   document.getElementById("modal-product-desc").textContent = prod.description;
 
-  // Rating Stars
   const ratingBox = document.getElementById("modal-product-rating");
   const fullStars = Math.floor(prod.rating);
   let starsHtml = "";
@@ -589,7 +538,6 @@ function openProductModal(prod) {
   }
   ratingBox.innerHTML = `<div class="stars">${starsHtml}</div> <span>${prod.rating} (${prod.reviewsCount} opiniones)</span>`;
 
-  // Specs Table
   const specsTable = document.getElementById("modal-specs-table");
   specsTable.innerHTML = "";
   Object.entries(prod.specs).forEach(([key, val]) => {
@@ -598,7 +546,6 @@ function openProductModal(prod) {
     specsTable.appendChild(tr);
   });
 
-  // Modal Add to Cart Button
   const modalAddBtn = document.getElementById("modal-btn-add-cart");
   modalAddBtn.onclick = () => {
     addToCart(prod);

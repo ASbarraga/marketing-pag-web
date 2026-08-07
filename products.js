@@ -1,6 +1,4 @@
-// Base de Datos de Productos de PC MASTERS (35 Productos, 7 Categorías)
 const PRODUCTS_DATA = [
-  // 1. TARJETAS GRÁFICAS (5 productos)
   {
     id: "gpu-1",
     name: "NVIDIA GeForce RTX 4090 Gaming OC 24GB",
@@ -86,8 +84,6 @@ const PRODUCTS_DATA = [
     },
     stock: 10
   },
-
-  // 2. PROCESADORES (5 productos)
   {
     id: "cpu-1",
     name: "AMD Ryzen 7 7800X3D (8 Núcleos / 16 Hilos)",
@@ -173,8 +169,6 @@ const PRODUCTS_DATA = [
     },
     stock: 15
   },
-
-  // 3. MEMORIAS RAM (5 productos)
   {
     id: "ram-1",
     name: "Corsair Dominator Titanium RGB DDR5 32GB (2x16GB) 7200MHz",
@@ -260,8 +254,6 @@ const PRODUCTS_DATA = [
     },
     stock: 7
   },
-
-  // 4. GABINETES (5 productos)
   {
     id: "case-1",
     name: "NZXT H9 Elite Dual-Chamber Mid-Tower Black",
@@ -347,8 +339,6 @@ const PRODUCTS_DATA = [
     },
     stock: 4
   },
-
-  // 5. TECLADOS (5 productos)
   {
     id: "kb-1",
     name: "Keychron Q1 Max QMK/VIA Wireless Mechanical Keyboard",
@@ -434,8 +424,6 @@ const PRODUCTS_DATA = [
     },
     stock: 6
   },
-
-  // 6. MOUSE (5 productos)
   {
     id: "mouse-1",
     name: "Logitech G PRO X SUPERLIGHT 2 LIGHTSPEED Wireless",
@@ -521,8 +509,6 @@ const PRODUCTS_DATA = [
     },
     stock: 8
   },
-
-  // 7. LAPTOPS (5 productos)
   {
     id: "laptop-1",
     name: "ASUS ROG Strix SCAR 18 (2024) RTX 4090 / i9-14900HX",
