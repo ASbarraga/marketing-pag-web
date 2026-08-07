@@ -110,16 +110,21 @@ button {
   user-select: none;
 }
 
-.header-brand-icon {
-  width: 40px;
-  height: 40px;
+.header-logo-img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
   border-radius: var(--radius-md);
-  background: var(--primary-gradient);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-dark);
+  padding: 4px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
   box-shadow: 0 0 16px var(--primary-glow);
+  transition: var(--transition);
+}
+
+.header-brand:hover .header-logo-img {
+  border-color: var(--primary-neon);
+  transform: scale(1.05);
 }
 
 .header-brand h1 {
