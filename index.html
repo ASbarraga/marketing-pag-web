@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="PC MASTERS - La mejor tienda de hardware de alto rendimiento. Tarjetas gráficas, procesadores, memorias RAM, gabinetes, teclados, mouse y laptops.">
+  <title>PC MASTERS | Tienda de Tecnología & Hardware</title>
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="index.css">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header id="main-header">
+    <div class="header-brand" id="btn-brand-logo">
+      <div class="header-brand-icon">
+        <i data-lucide="cpu"></i>
+      </div>
+      <h1>PC <span>MASTERS</span></h1>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="header-search">
+      <i data-lucide="search"></i>
+      <input type="text" id="search-input" placeholder="Buscar tarjetas, procesadores, laptops, mouse...">
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="header-actions">
+      <button class="nav-btn active" id="btn-nav-home" data-target="view-catalog">
+        <i data-lucide="grid"></i> Catálogo
+      </button>
+      <button class="nav-btn btn-cart-nav" id="btn-nav-cart" data-target="view-cart">
+        <i data-lucide="shopping-cart"></i> Carrito
+        <span class="badge" id="cart-badge-count">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTAINER (SPA) -->
+  <main id="app-content">
+
+    <!-- VISTA 1: CATÁLOGO DE PRODUCTOS -->
+    <section id="view-catalog" class="view active">
+      <!-- Hero Banner -->
+      <div class="hero-banner">
+        <div>
+          <div class="hero-tag"><i data-lucide="zap"></i> Novedades 2026</div>
+          <h2 class="hero-title">Equípate con lo Último en <span>Hardware de Elite</span></h2>
+          <p class="hero-desc">Explora componentes de máxima potencia y rendimiento para tu PC Gamer o Estación de Trabajo.</p>
+        </div>
+      </div>
+
+      <!-- Categories Selector Bar -->
+      <div class="categories-wrapper">
+        <div class="categories-bar" id="categories-container">
+          <!-- Dynamically populated via JS -->
+        </div>
+      </div>
+
+      <!-- Catalog Toolbar & Sort -->
+      <div class="catalog-toolbar">
+        <div class="results-count" id="catalog-count-text">
+          Mostrando <strong id="products-count-number">0</strong> productos
+        </div>
+        <div class="sort-wrapper">
+          <label for="sort-select">Ordenar por:</label>
+          <select id="sort-select" class="sort-select">
+            <option value="popular">Recomendados</option>
+            <option value="price-low">Precio: Menor a Mayor</option>
+            <option value="price-high">Precio: Mayor a Menor</option>
+            <option value="rating">Mejor Valorados</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="products-grid" id="products-grid">
+        <!-- Dynamically populated via JS -->
+      </div>
+    </section>
+
+    <!-- VISTA 2: CARRITO DE COMPRAS -->
+    <section id="view-cart" class="view">
+      <div class="cart-header">
+        <h2 style="font-size: 28px; font-weight: 900;">Carrito de Compras</h2>
+        <p style="color: var(--text-muted); font-size: 14px; margin-top: 4px;">Revisa tus productos seleccionados antes de proceder al pago.</p>
+      </div>
+
+      <div class="cart-layout">
+        <!-- Cart Items List -->
+        <div class="cart-items-list" id="cart-items-container">
+          <!-- Dynamically populated via JS -->
+        </div>
+
+        <!-- Cart Summary Card -->
+        <div class="cart-summary-card" id="cart-summary-card">
+          <h3 class="summary-title">Resumen del Pedido</h3>
+          
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="cart-subtotal-text">$0.00</span>
+          </div>
+          <div class="summary-row">
+            <span>Envío Garantizado</span>
+            <span style="color: var(--primary-neon); font-weight: 700;">¡GRATIS!</span>
+          </div>
+          <div class="summary-row">
+            <span>Impuestos (IVA 0%)</span>
+            <span>$0.00</span>
+          </div>
+
+          <div class="summary-row total">
+            <span>Total</span>
+            <span id="cart-total-text">$0.00</span>
+          </div>
+
+          <button class="btn-checkout-proceed" id="btn-proceed-checkout">
+            <i data-lucide="credit-card"></i> Proceder al Pago
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VISTA 3: APARTADO DE PAGO (CHECKOUT SIMULATOR) -->
+    <section id="view-checkout" class="view">
+      <div class="checkout-header">
+        <button class="btn-back-cart" id="btn-back-to-cart">
+          <i data-lucide="arrow-left"></i> Volver al Carrito
+        </button>
+        <h2 style="font-size: 26px; font-weight: 900;">Apartado de Pago Seguro</h2>
+      </div>
+
+      <div class="checkout-grid">
+        <!-- Interactive 3D Credit Card Preview -->
+        <div class="card-3d-wrapper">
+          <div class="credit-card" id="credit-card-3d">
+            <!-- Card Front -->
+            <div class="card-face card-face-front">
+              <div class="cc-header">
+                <div class="cc-chip"></div>
+                <div class="cc-brand-logo">PC MASTERS</div>
+              </div>
+              <div class="cc-number" id="cc-number-preview">•••• •••• •••• ••••</div>
+              <div class="cc-footer">
+                <div>
+                  <div class="cc-label">Titular de la Tarjeta</div>
+                  <div class="cc-val" id="cc-name-preview">NOMBRE COMPLETO</div>
+                </div>
+                <div>
+                  <div class="cc-label">Vencimiento</div>
+                  <div class="cc-val" id="cc-expiry-preview">MM/YY</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Back -->
+            <div class="card-face card-face-back">
+              <div class="cc-black-bar"></div>
+              <div class="cc-cvv-panel" id="cc-cvv-preview">•••</div>
+              <div style="padding: 16px; font-size: 9px; color: var(--text-muted); line-height: 1.4;">
+                Simulador de pasarela de pago para la tienda PC MASTERS. No realiza cargos financieros reales.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkout Payment Form -->
+        <div class="checkout-form-card">
+          <form id="checkout-form">
+            <div class="form-group">
+              <label class="form-label" for="card-number">Número de Tarjeta</label>
+              <div class="input-with-icon">
+                <i data-lucide="credit-card"></i>
+                <input type="text" id="card-number" class="form-input" placeholder="4532 1198 4402 8810" maxlength="19" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="card-name">Nombre del Titular</label>
+              <div class="input-with-icon">
+                <i data-lucide="user"></i>
+                <input type="text" id="card-name" class="form-input" placeholder="ALEXIS BARRAGAN" required>
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="card-expiry">Fecha Vencimiento</label>
+                <input type="text" id="card-expiry" class="form-input no-icon" placeholder="12/28" maxlength="5" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="card-cvv">Código CVC / CVV</label>
+                <input type="password" id="card-cvv" class="form-input no-icon" placeholder="882" maxlength="4" required>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-submit-payment" id="btn-submit-payment">
+              <i data-lucide="shield-check"></i> Pagar $<span id="checkout-btn-total">0.00</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: DETALLE DE PRODUCTO -->
+  <div class="modal-overlay" id="detail-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-product-title">Detalle del Producto</h3>
+        <button class="btn-close-modal" id="btn-close-detail-modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="detail-grid">
+          <img id="modal-product-img" class="detail-img" src="" alt="Producto">
+          <div>
+            <div id="modal-product-category" class="card-category-badge" style="position: static; display: inline-block;">CATEGORÍA</div>
+            <div id="modal-product-rating" class="card-rating" style="margin-top: 10px;"></div>
+            <div id="modal-product-price" class="detail-price">$0.00</div>
+            <div style="font-size: 13px; color: var(--primary-neon); margin-bottom: 16px;">
+              <i data-lucide="check-circle-2" style="width: 14px; height: 14px; vertical-align: middle;"></i> Stock Disponible: <strong id="modal-product-stock">0</strong> unidades
+            </div>
+            <button class="btn-add-cart" id="modal-btn-add-cart" style="padding: 12px 24px; font-size: 14px;">
+              <i data-lucide="shopping-cart"></i> Añadir al Carrito
+            </button>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+          <h4 style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">Descripción</h4>
+          <p id="modal-product-desc" style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;"></p>
+        </div>
+
+        <div style="margin-top: 24px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+          <h4 style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">Especificaciones Técnicas</h4>
+          <table class="specs-table" id="modal-specs-table">
+            <!-- Dynamic specs -->
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: RECIBO DE CONFIRMACIÓN DE COMPRA -->
+  <div class="modal-overlay" id="receipt-modal">
+    <div class="modal-content" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3>¡Pago Exitoso!</h3>
+      </div>
+      <div class="modal-body receipt-card">
+        <div class="success-icon-circle">
+          <i data-lucide="check" style="width: 40px; height: 40px;"></i>
+        </div>
+        <h3 style="font-size: 22px; font-weight: 900; margin-bottom: 6px;">¡Gracias por tu compra!</h3>
+        <p style="color: var(--text-muted); font-size: 14px;">Tu pedido ha sido procesado con éxito en PC MASTERS.</p>
+
+        <div class="receipt-details">
+          <div class="receipt-row">
+            <span>Nº de Transacción:</span>
+            <strong id="receipt-id" style="color: var(--primary-neon);">#PCM-000000</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Fecha:</span>
+            <span id="receipt-date">--/--/----</span>
+          </div>
+          <div class="receipt-row">
+            <span>Método de Pago:</span>
+            <span>Tarjeta de Crédito</span>
+          </div>
+          <div class="receipt-row" style="margin-top: 12px; border-top: 1px solid var(--border-color); padding-top: 12px; font-size: 16px; font-weight: 800;">
+            <span>Total Pagado:</span>
+            <span id="receipt-total" style="color: var(--primary-neon);">$0.00</span>
+          </div>
+        </div>
+
+        <button class="btn-checkout-proceed" id="btn-close-receipt">
+          <i data-lucide="shopping-bag"></i> Continuar Comprando
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast" id="toast">
+    <div class="toast-icon"><i data-lucide="check-circle"></i></div>
+    <div class="toast-msg" id="toast-message">Notificación de prueba</div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2026 <strong>PC MASTERS</strong>. Todos los derechos reservados. Tienda de Hardware & Tecnología Minimalista.</p>
+  </footer>
+
+  <!-- App Scripts -->
+  <script src="products.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
