@@ -23,7 +23,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="PC MASTERS - La mejor tienda de hardware de alto rendimiento. Tarjetas gráficas, procesadores, memorias RAM, gabinetes, teclados, mouse y laptops.">
   <title>PC MASTERS | Tienda de Tecnología & Hardware</title>
-  <link rel="stylesheet" href="index.css?v=3">
+  <link rel="stylesheet" href="index.css?v=4">
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
@@ -49,6 +49,9 @@
       <button class="nav-btn active" id="btn-nav-home" data-target="view-catalog">
         <i data-lucide="grid"></i> Catálogo
       </button>
+      <button class="nav-btn" id="btn-nav-info" data-target="view-info">
+        <i data-lucide="info"></i> Información
+      </button>
       <button class="nav-btn btn-cart-nav" id="btn-nav-cart" data-target="view-cart">
         <i data-lucide="shopping-cart"></i> Carrito
         <span class="badge" id="cart-badge-count">0</span>
@@ -58,6 +61,7 @@
 
   <main id="app-content">
 
+    <!-- VISTA 1: CATÁLOGO DE PRODUCTOS -->
     <section id="view-catalog" class="view active">
       <div class="hero-banner">
         <div>
@@ -91,6 +95,149 @@
       </div>
     </section>
 
+    <!-- VISTA 2: INFORMACIÓN INSTITUCIONAL, CREADORES Y UBICACIÓN -->
+    <section id="view-info" class="view">
+      <div class="hero-banner" style="background: linear-gradient(135deg, rgba(0, 255, 135, 0.1) 0%, rgba(14, 20, 16, 0.95) 100%);">
+        <div>
+          <div class="hero-tag"><i data-lucide="shield-check"></i> Proyecto Académico & Empresa</div>
+          <h2 class="hero-title">Información Institucional <span>PC MASTERS</span></h2>
+          <p class="hero-desc">Conoce nuestra Misión, Visión, Creadores del Proyecto, Términos del Servicio y Formas de Contacto en Guayaquil, Ecuador.</p>
+        </div>
+      </div>
+
+      <!-- SOBRE LA PÁGINA -->
+      <div class="info-card">
+        <h3 class="info-card-title"><i data-lucide="globe"></i> Sobre la Plataforma PC MASTERS</h3>
+        <p class="info-card-text">
+          <strong>PC MASTERS</strong> es una plataforma e-commerce de demostración interactiva concebida para la comercialización digital de hardware de élite, componentes informáticos de última generación y equipos de cómputo de alta gama en Ecuador.
+        </p>
+        <p class="info-card-text" style="margin-top: 12px;">
+          Desarrollada como una Single Page Application (SPA) moderna, veloz y optimizada, integra un catálogo dinámico con 35 productos organizados en 7 categorías tecnológicas, complementado con una pasarela de pago simulada que incluye animación 3D de tarjeta de crédito e integración completa con Google Analytics y Google Tag Manager.
+        </p>
+      </div>
+
+      <!-- MISIÓN Y VISIÓN -->
+      <div class="grid-2-cols" style="margin-top: 24px;">
+        <div class="info-card highlight-border">
+          <div class="info-icon-badge"><i data-lucide="target"></i></div>
+          <h3 class="info-card-title" style="margin-top: 12px;">Nuestra Misión</h3>
+          <p class="info-card-text">
+            Proveer a entusiastas del gaming, creadores de contenido y profesionales del sector tecnológico en Ecuador el acceso directo a componentes computacionales de máxima potencia y última generación, garantizando una experiencia de compra en línea intuitiva, transparente, segura y acompañada de un soporte técnico especializado de excelencia.
+          </p>
+        </div>
+
+        <div class="info-card highlight-border">
+          <div class="info-icon-badge"><i data-lucide="eye"></i></div>
+          <h3 class="info-card-title" style="margin-top: 12px;">Nuestra Visión</h3>
+          <p class="info-card-text">
+            Consolidarnos para el año 2030 como la tienda virtual e-commerce de hardware líder en Ecuador y referente regional en distribución tecnológica de alto nivel, destacándonos por la continua innovación digital en la experiencia de usuario, excelencia en procesos logísticos y compromiso con el desarrollo de la comunidad tecnológica.
+          </p>
+        </div>
+      </div>
+
+      <!-- CREADORES DEL PROYECTO -->
+      <div class="info-card" style="margin-top: 24px;">
+        <h3 class="info-card-title"><i data-lucide="users"></i> Creadores del Proyecto</h3>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
+          Este proyecto e-commerce fue desarrollado de forma colaborativa por el siguiente equipo:
+        </p>
+
+        <div class="creators-grid">
+          <div class="creator-box">
+            <div class="creator-avatar"><i data-lucide="user-check"></i></div>
+            <h4 class="creator-name">Antonio Sebastian Barragan Cedeño</h4>
+            <span class="creator-role">Desarrollador Web & Arquitectura</span>
+          </div>
+
+          <div class="creator-box">
+            <div class="creator-avatar"><i data-lucide="code-2"></i></div>
+            <h4 class="creator-name">Zair Isrraelita Barragan Barragan</h4>
+            <span class="creator-role">Diseño UX/UI & Especialista de Producto</span>
+          </div>
+
+          <div class="creator-box">
+            <div class="creator-avatar"><i data-lucide="award"></i></div>
+            <h4 class="creator-name">Vanesa Alexandra Salazar Guerra</h4>
+            <span class="creator-role">Marketing Digital & Analítica Web</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTACTOS Y UBICACIÓN -->
+      <div class="grid-2-cols" style="margin-top: 24px;">
+        <div class="info-card">
+          <h3 class="info-card-title"><i data-lucide="phone-call"></i> Contacto Oficial</h3>
+          <p class="info-card-text" style="margin-bottom: 16px;">
+            ¿Tienes dudas o requieres asesoría para ensamblar tu PC Gamer? Contáctanos directamente:
+          </p>
+
+          <div class="contact-item">
+            <i data-lucide="phone"></i>
+            <div>
+              <span class="contact-label">Teléfono de Atención:</span>
+              <a href="tel:+593988957278" class="contact-value">+593 98 895 7278</a>
+            </div>
+          </div>
+
+          <div class="contact-item" style="margin-top: 14px;">
+            <i data-lucide="message-square"></i>
+            <div>
+              <span class="contact-label">WhatsApp Directo:</span>
+              <a href="https://wa.me/593988957278" target="_blank" rel="noopener" class="contact-value" style="color: #25D366; font-weight: 700;">
+                Chat de WhatsApp (+593 98 895 7278)
+              </a>
+            </div>
+          </div>
+
+          <div class="contact-item" style="margin-top: 14px;">
+            <i data-lucide="mail"></i>
+            <div>
+              <span class="contact-label">Correo Institucional:</span>
+              <span class="contact-value">abarraganube@gmail.com</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <h3 class="info-card-title"><i data-lucide="map-pin"></i> Ubicación Física</h3>
+          <p class="info-card-text" style="margin-bottom: 12px;">
+            <strong>Ciudad:</strong> Guayaquil, Ecuador<br>
+            <strong>Sector:</strong> Guasmo Sur, Unión de Bananeros
+          </p>
+
+          <div style="margin-bottom: 14px;">
+            <a href="https://www.google.com/maps/place/Guasmo+Sur,+Union+de+bananeros/@-2.2745098,-79.8814115,17.25z/data=!4m6!3m5!1s0x902d65734f3fd7ad:0xc36d493e30881690!8m2!3d-2.2744731!4d-79.8814627!16s%2Fg%2F11qnzsz5gy?entry=ttu&g_ep=EgoyMDI2MDgxNi4wIKXMDSoASAFQAw%3D%3D" 
+               target="_blank" rel="noopener" class="btn-maps-link">
+              <i data-lucide="external-link"></i> Abrir Ubicación en Google Maps
+            </a>
+          </div>
+
+          <div class="map-container">
+            <iframe 
+              src="https://maps.google.com/maps?q=-2.2745098,-79.8814115&z=16&output=embed" 
+              width="100%" 
+              height="200" 
+              style="border:0; border-radius: 12px;" 
+              allowfullscreen="" 
+              loading="lazy">
+            </iframe>
+          </div>
+        </div>
+      </div>
+
+      <!-- TÉRMINOS Y CONDICIONES -->
+      <div class="info-card" style="margin-top: 24px;">
+        <h3 class="info-card-title"><i data-lucide="file-text"></i> Términos y Condiciones del Servicio</h3>
+        <div class="terms-box">
+          <p><strong>1. Carácter Académico del Proyecto:</strong> PC MASTERS es una plataforma creada con fines demostrativos y educativos de desarrollo web, comercio electrónico y analítica digital. Los productos listados en el catálogo y los precios corresponden a referencias del mercado tecnológico.</p>
+          <p><strong>2. Pasarela de Pago Simulada:</strong> El apartado de pago seguro integra un simulador interactivo de tarjeta de crédito en 3D. No realiza cargos ni procesa datos financieros reales.</p>
+          <p><strong>3. Garantía y Calidad de Hardware:</strong> Todos los componentes exhibidos en el catálogo corresponden a marcas líderes mundiales (NVIDIA, AMD, ASUS, Corsair, Logitech, Apple, MSI, Razer, Lian Li) con especificaciones reales para fines informativos.</p>
+          <p><strong>4. Derechos Reservados:</strong> Todo el diseño, marca, código e implementación son propiedad intelectual del equipo de creadores: Antonio Sebastian Barragan Cedeño, Zair Isrraelita Barragan Barragan y Vanesa Alexandra Salazar Guerra.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- VISTA 3: CARRITO DE COMPRAS -->
     <section id="view-cart" class="view">
       <div class="cart-header">
         <h2 style="font-size: 28px; font-weight: 900;">Carrito de Compras</h2>
@@ -129,6 +276,7 @@
       </div>
     </section>
 
+    <!-- VISTA 4: APARTADO DE PAGO (CHECKOUT SIMULATOR) -->
     <section id="view-checkout" class="view">
       <div class="checkout-header">
         <button class="btn-back-cart" id="btn-back-to-cart">
@@ -289,7 +437,7 @@
   </div>
 
   <footer>
-    <p>&copy; 2026 <strong>PC MASTERS</strong>. Todos los derechos reservados. Tienda de Hardware & Tecnología Minimalista.</p>
+    <p>&copy; 2026 <strong>PC MASTERS</strong>. Creado por Antonio Barragan, Zair Barragan y Vanesa Salazar. Guayaquil, Ecuador.</p>
   </footer>
 
   <script src="products.js"></script>
