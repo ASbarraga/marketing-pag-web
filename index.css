@@ -122,11 +122,10 @@ button {
   transition: var(--transition);
 }
 
-.header-logo-icon-img {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-  filter: brightness(0);
+.header-logo-icon-svg {
+  width: 26px;
+  height: 26px;
+  display: block;
 }
 
 .header-brand:hover .header-brand-icon {
