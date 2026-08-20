@@ -230,11 +230,15 @@ button {
   transition: transform 0.3s ease;
 }
 
+body, header, .view, .product-card, .promo-banner-card, .trust-features-bar, .hero-showcase-container, h1, h2, h3, p, span, button, a, input, select {
+  transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
 /* MODO CLARO (LIGHT MODE THEME) WITH PRESERVED LIQUID GLASS */
 body.light-mode {
-  --bg-dark: #f1f3f6;
+  --bg-dark: #f1f5f9;
   --bg-surface: #ffffff;
-  --bg-card: rgba(255, 255, 255, 0.9);
+  --bg-card: rgba(255, 255, 255, 0.95);
   --bg-card-hover: #f8fafc;
   
   --border-color: rgba(0, 0, 0, 0.12);
@@ -242,8 +246,8 @@ body.light-mode {
   
   --primary-neon: #65a30d;
   --primary-green: #84cc16;
-  --primary-gradient: linear-gradient(135deg, #ccff00 0%, #84cc16 100%);
-  --primary-glow: rgba(132, 204, 22, 0.3);
+  --primary-gradient: linear-gradient(135deg, #a3e635 0%, #65a30d 100%);
+  --primary-glow: rgba(132, 204, 22, 0.25);
   
   --text-primary: #0f172a;
   --text-secondary: #334155;
@@ -255,61 +259,198 @@ body.light-mode {
   --shadow-card: 0 12px 36px rgba(0, 0, 0, 0.08);
 
   background-color: var(--bg-dark);
-  color: var(--text-primary);
+  color: #0f172a;
 }
 
 body.light-mode header#main-header {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.88);
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 body.light-mode .liquid-glass {
-  background: rgba(255, 255, 255, 0.75) !important;
+  background: rgba(255, 255, 255, 0.85) !important;
   backdrop-filter: blur(24px) saturate(200%) !important;
   -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.9) !important;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.06), inset 0 1px 1px rgba(255, 255, 255, 1) !important;
 }
 
 body.light-mode .theme-toggle-btn {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
   border-color: rgba(101, 163, 13, 0.4);
   color: #65a30d;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
+body.light-mode .hero-main-brand {
+  color: #0f172a !important;
+}
+
+body.light-mode .hero-product-title {
+  color: #1e293b !important;
+}
+
+body.light-mode .hero-tagline {
+  color: #334155 !important;
+  font-weight: 800 !important;
+}
+
+body.light-mode .hero-description {
+  color: #334155 !important;
+  font-weight: 500 !important;
+}
+
+body.light-mode .hero-price-tag {
+  color: #0f172a !important;
+}
+
+body.light-mode .hero-preview-badge {
+  color: #1e293b !important;
+  background: rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+body.light-mode .hero-preview-badge:hover {
+  background: rgba(0, 0, 0, 0.12) !important;
+  color: #0f172a !important;
+}
+
+body.light-mode .hero-brand-badge {
+  background: rgba(101, 163, 13, 0.15) !important;
+  color: #4d7c0f !important;
+  border-color: rgba(101, 163, 13, 0.4) !important;
+}
+
+body.light-mode .categories-wrapper h3 {
+  color: #0f172a !important;
+}
+
+body.light-mode .catalog-toolbar {
+  color: #0f172a !important;
+}
+
+body.light-mode .results-count {
+  color: #475569 !important;
+}
+
+body.light-mode .results-count strong {
+  color: #65a30d !important;
+}
+
+body.light-mode .sort-wrapper label {
+  color: #475569 !important;
+}
+
+body.light-mode .sort-select {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+body.light-mode .header-search input {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+body.light-mode .header-search input::placeholder {
+  color: #64748b !important;
+}
+
+body.light-mode .header-search i {
+  color: #64748b !important;
+}
+
+body.light-mode .header-brand h1 {
+  color: #0f172a !important;
+}
+
+body.light-mode .nav-btn {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #334155 !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+body.light-mode .nav-btn:hover,
+body.light-mode .nav-btn.active {
+  background: rgba(132, 204, 22, 0.18) !important;
+  color: #4d7c0f !important;
+  border-color: #65a30d !important;
+}
+
+body.light-mode .nav-btn.btn-cart-nav {
+  background: linear-gradient(135deg, #a3e635 0%, #65a30d 100%) !important;
+  color: #ffffff !important;
+}
+
+body.light-mode .nav-btn.btn-cart-nav .badge {
+  background: #ffffff !important;
+  color: #4d7c0f !important;
+}
+
 body.light-mode .promo-banner-card.dark-accent {
-  background: rgba(255, 255, 255, 0.88);
-  color: #0f172a;
-  border-color: rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.9) !important;
+  color: #0f172a !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 body.light-mode .promo-banner-card.dark-accent h3,
 body.light-mode .promo-banner-card.dark-accent p {
-  color: #0f172a;
+  color: #0f172a !important;
+}
+
+body.light-mode .promo-banner-card.dark-accent .promo-tag {
+  color: #65a30d !important;
+}
+
+body.light-mode .spotlight-card {
+  background: rgba(255, 255, 255, 0.88) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 body.light-mode .spotlight-title {
-  color: #0f172a;
+  color: #0f172a !important;
+}
+
+body.light-mode .spotlight-desc {
+  color: #475569 !important;
 }
 
 body.light-mode .trust-pill {
-  background: rgba(255, 255, 255, 0.92);
-  color: #0f172a;
-  border-color: rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #0f172a !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
 }
 
 body.light-mode .trust-feature-item strong {
-  color: #0f172a;
+  color: #0f172a !important;
+}
+
+body.light-mode .trust-feature-item p {
+  color: #64748b !important;
 }
 
 body.light-mode .card-img-container {
-  background: #f8fafc;
+  background: #f8fafc !important;
 }
 
-body.light-mode .hero-product-title,
-body.light-mode .hero-main-brand {
-  color: #0f172a;
+body.light-mode .product-card {
+  background: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+body.light-mode .card-title {
+  color: #0f172a !important;
+}
+
+body.light-mode .card-price {
+  color: #0f172a !important;
+}
+
+body.light-mode .card-specs-mini span {
+  background: #f1f5f9 !important;
+  color: #334155 !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
 }
 
 .nav-btn:hover, .nav-btn.active {
