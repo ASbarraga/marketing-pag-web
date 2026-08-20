@@ -488,10 +488,36 @@ function initApp() {
   initModals();
   initAuth();
   initAdminPanel();
+  initHeroShowcase();
   renderCatalog();
   updateCartBadge();
   refreshLucideIcons();
   loadProductsFromBackend();
+}
+
+function initHeroShowcase() {
+  const btnBuy = document.getElementById("btn-hero-buy-now");
+  const btnPreview = document.getElementById("btn-hero-preview-3d");
+
+  if (btnBuy) {
+    btnBuy.addEventListener("click", () => {
+      const prods = getProductsList();
+      const flagshipGpu = prods.find(p => p.id === "gpu-1") || prods[0];
+      if (flagshipGpu) {
+        addToCart(flagshipGpu);
+      }
+    });
+  }
+
+  if (btnPreview) {
+    btnPreview.addEventListener("click", () => {
+      const prods = getProductsList();
+      const flagshipGpu = prods.find(p => p.id === "gpu-1") || prods[0];
+      if (flagshipGpu) {
+        openProductModal(flagshipGpu);
+      }
+    });
+  }
 }
 
 if (document.readyState === "loading") {
