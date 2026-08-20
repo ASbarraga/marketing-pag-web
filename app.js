@@ -30,7 +30,18 @@ let state = {
   sortBy: "popular",
   cart: JSON.parse(localStorage.getItem("pcm_cart")) || [],
   selectedProductForModal: null,
-  currentUser: JSON.parse(localStorage.getItem("pcm_current_user")) || null
+  currentUser: JSON.parse(localStorage.getItem("pcm_current_user")) || null,
+  orders: JSON.parse(localStorage.getItem("pcm_orders")) || [
+    { id: "#PCM-784210", date: "20/08/2026", customer: "Zair Barragan", total: 1899.99, method: "Tarjeta de Crédito", status: "En camino" },
+    { id: "#PCM-659102", date: "19/08/2026", customer: "Vanesa Salazar", total: 489.99, method: "Tarjeta de Crédito", status: "Entregado" },
+    { id: "#PCM-412093", date: "19/08/2026", customer: "Carlos Mendoza", total: 1199.99, method: "Tarjeta de Crédito", status: "Pendiente" },
+    { id: "#PCM-302911", date: "18/08/2026", customer: "María José", total: 299.99, method: "Tarjeta de Crédito", status: "Pagado" }
+  ],
+  adminUsers: JSON.parse(localStorage.getItem("pcm_admin_users")) || [
+    { id: "usr_admin_001", username: "ASbarrag", name: "Antonio Barragán", email: "asbarraganc@ube.edu.ec", role: "Admin", status: "Activo", createdAt: "20/08/2026" },
+    { id: "usr_002", username: "zairbarragan", name: "Zair Barragán", email: "zair@pcmasters.com", role: "Client", status: "Activo", createdAt: "19/08/2026" },
+    { id: "usr_003", username: "vanesasalazar", name: "Vanesa Salazar", email: "vanesa@pcmasters.com", role: "Client", status: "Activo", createdAt: "18/08/2026" }
+  ]
 };
 
 const CATEGORIES = [
@@ -51,6 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initCheckoutCardInteraction();
   initModals();
   initAuth();
+  initAdminPanel();
   renderCatalog();
   updateCartBadge();
   refreshLucideIcons();
@@ -105,10 +117,12 @@ function initNavigation() {
       if (state.currentUser) {
         const cardNameInput = document.getElementById("card-name");
         if (cardNameInput && !cardNameInput.value) {
-          cardNameInput.value = state.currentUser.username.toUpperCase();
+          cardNameInput.value = state.currentUser.name ? state.currentUser.name.toUpperCase() : state.currentUser.username.toUpperCase();
           cardNameInput.dispatchEvent(new Event("input"));
         }
       }
+    } else if (targetViewId === "view-admin") {
+      renderAdminAll();
     }
 
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -517,6 +531,18 @@ function initCheckoutCardInteraction() {
       document.getElementById("receipt-date").textContent = today;
       document.getElementById("receipt-total").textContent = `$${total.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
 
+      // Save order into state.orders for Admin Dashboard!
+      const newOrder = {
+        id: `#${randomTx}`,
+        date: today,
+        customer: state.currentUser ? (state.currentUser.name || state.currentUser.username) : (cardName.value || "Cliente General"),
+        total: total,
+        method: "Tarjeta de Crédito",
+        status: "Pendiente"
+      };
+      state.orders.unshift(newOrder);
+      localStorage.setItem("pcm_orders", JSON.stringify(state.orders));
+
       state.cart = [];
       saveCart();
       updateCartBadge();
@@ -609,13 +635,23 @@ function saveStoredUsersDB(users) {
 
 function renderHeaderAuth() {
   const container = document.getElementById("auth-header-container");
+  const btnAdminNav = document.getElementById("btn-nav-admin");
   if (!container) return;
 
+  const isUserAdmin = state.currentUser && (state.currentUser.role === "Admin" || state.currentUser.username.toLowerCase() === "asbarrag");
+
+  if (btnAdminNav) {
+    btnAdminNav.style.display = isUserAdmin ? "inline-flex" : "none";
+  }
+
   if (state.currentUser) {
+    const badgeColor = isUserAdmin ? "border-color: #ef4444; color: #ef4444; background: rgba(239,68,68,0.12);" : "";
+    const badgeIcon = isUserAdmin ? "shield" : "user-check";
+
     container.innerHTML = `
-      <div class="user-logged-badge" id="user-profile-badge">
-        <i data-lucide="user-check"></i>
-        <span id="header-username-text">${state.currentUser.username}</span>
+      <div class="user-logged-badge" id="user-profile-badge" style="${badgeColor}">
+        <i data-lucide="${badgeIcon}"></i>
+        <span id="header-username-text">${isUserAdmin ? "Admin: " : ""}${state.currentUser.username}</span>
         <button class="btn-logout-header" id="btn-logout" title="Cerrar Sesión">
           <i data-lucide="log-out"></i>
         </button>
@@ -684,6 +720,23 @@ async function handleLogin(username, password) {
     return;
   }
 
+  // Check Admin Hardcoded Match
+  if (cleanUsername.toLowerCase() === "asbarrag" && password === "Sebas1307") {
+    const adminUser = {
+      id: "usr_admin_001",
+      username: "ASbarrag",
+      name: "Antonio Barragán",
+      email: "asbarraganc@ube.edu.ec",
+      role: "Admin",
+      status: "Activo"
+    };
+    setCurrentUser(adminUser);
+    closeAuthModal();
+    showToast("¡Bienvenido SuperAdmin Antonio Barragán!");
+    document.getElementById("btn-nav-admin").click();
+    return;
+  }
+
   try {
     const res = await fetch("/api/auth", {
       method: "POST",
@@ -696,6 +749,9 @@ async function handleLogin(username, password) {
       setCurrentUser(data.user);
       closeAuthModal();
       showToast(`¡Bienvenido de nuevo, ${data.user.username}!`);
+      if (data.user.role === "Admin" || data.user.username.toLowerCase() === "asbarrag") {
+        document.getElementById("btn-nav-admin").click();
+      }
       return;
     } else if (res.status === 401 || res.status === 400) {
       showToast(data.error || "Usuario o contraseña incorrectos");
@@ -711,9 +767,12 @@ async function handleLogin(username, password) {
   );
 
   if (found) {
-    setCurrentUser({ username: found.username });
+    setCurrentUser(found);
     closeAuthModal();
     showToast(`¡Bienvenido de nuevo, ${found.username}!`);
+    if (found.role === "Admin" || found.username.toLowerCase() === "asbarrag") {
+      document.getElementById("btn-nav-admin").click();
+    }
   } else {
     showToast("Nombre de usuario o contraseña incorrectos");
   }
@@ -747,7 +806,16 @@ async function handleRegister(username, password, confirmPassword) {
     if (res.ok && data.success) {
       const localUsers = getStoredUsersDB();
       if (!localUsers.some(u => u.username.toLowerCase() === cleanUsername.toLowerCase())) {
-        localUsers.push({ username: cleanUsername, password: password, createdAt: new Date().toISOString() });
+        localUsers.push({
+          id: data.user.id,
+          username: cleanUsername,
+          password: password,
+          name: cleanUsername,
+          email: cleanUsername.toLowerCase() + "@pcmasters.com",
+          role: "Client",
+          status: "Activo",
+          createdAt: new Date().toISOString()
+        });
         saveStoredUsersDB(localUsers);
       }
 
@@ -769,11 +837,20 @@ async function handleRegister(username, password, confirmPassword) {
     return;
   }
 
-  const newUser = { username: cleanUsername, password: password, createdAt: new Date().toISOString() };
+  const newUser = {
+    id: "usr_" + Date.now(),
+    username: cleanUsername,
+    password: password,
+    name: cleanUsername,
+    email: cleanUsername.toLowerCase() + "@pcmasters.com",
+    role: "Client",
+    status: "Activo",
+    createdAt: new Date().toISOString()
+  };
   localUsers.push(newUser);
   saveStoredUsersDB(localUsers);
 
-  setCurrentUser({ username: cleanUsername });
+  setCurrentUser(newUser);
   closeAuthModal();
   showToast(`¡Cuenta creada con éxito! Hola ${cleanUsername}`);
 }
@@ -791,6 +868,7 @@ function setCurrentUser(user) {
 function logoutUser() {
   setCurrentUser(null);
   showToast("Sesión cerrada correctamente");
+  document.getElementById("btn-nav-home").click();
 }
 
 function initAuth() {
@@ -835,4 +913,338 @@ function initAuth() {
       handleRegister(u, p, c);
     });
   }
+}
+
+// ----------------------------------------------------
+// LÓGICA DEL PANEL DE ADMINISTRADOR (ADMIN DASHBOARD)
+// ----------------------------------------------------
+function initAdminPanel() {
+  const adminTabBtns = document.querySelectorAll(".admin-tab-btn");
+  adminTabBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const targetTab = btn.dataset.admintab;
+      adminTabBtns.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      document.querySelectorAll(".admin-sec").forEach(sec => {
+        sec.style.display = "none";
+      });
+
+      const activeSec = document.getElementById(`admin-sec-${targetTab}`);
+      if (activeSec) {
+        activeSec.style.display = "block";
+      }
+      refreshLucideIcons();
+    });
+  });
+
+  // Add Product Button & Form Modal
+  const btnAddProd = document.getElementById("btn-admin-add-product");
+  const modalProd = document.getElementById("admin-product-modal");
+  const btnCloseModalProd = document.getElementById("btn-close-admin-prod-modal");
+
+  if (btnAddProd && modalProd) {
+    btnAddProd.addEventListener("click", () => {
+      document.getElementById("admin-prod-modal-title").textContent = "Añadir Nuevo Componente";
+      document.getElementById("admin-product-form").reset();
+      document.getElementById("prod-form-id").value = "";
+      modalProd.classList.add("active");
+      refreshLucideIcons();
+    });
+  }
+
+  if (btnCloseModalProd && modalProd) {
+    btnCloseModalProd.addEventListener("click", () => modalProd.classList.remove("active"));
+    modalProd.addEventListener("click", (e) => {
+      if (e.target === modalProd) modalProd.classList.remove("active");
+    });
+  }
+
+  const formProd = document.getElementById("admin-product-form");
+  if (formProd) {
+    formProd.addEventListener("submit", (e) => {
+      e.preventDefault();
+      saveAdminProduct();
+    });
+  }
+
+  // Add User Button
+  const btnAddUser = document.getElementById("btn-admin-add-user");
+  if (btnAddUser) {
+    btnAddUser.addEventListener("click", () => {
+      const u = prompt("Ingrese el Nombre de Usuario para el nuevo Moderador:");
+      if (u && u.trim()) {
+        const newUser = {
+          id: "usr_" + Date.now(),
+          username: u.trim(),
+          name: u.trim(),
+          email: u.trim().toLowerCase() + "@pcmasters.com",
+          role: "Mod",
+          status: "Activo",
+          createdAt: new Date().toLocaleDateString("es-EC")
+        };
+        state.adminUsers.push(newUser);
+        localStorage.setItem("pcm_admin_users", JSON.stringify(state.adminUsers));
+        renderAdminUsers();
+        showToast(`¡Usuario Moderador @${u.trim()} creado con éxito!`);
+      }
+    });
+  }
+
+  // Settings Form
+  const formSettings = document.getElementById("admin-settings-form");
+  if (formSettings) {
+    formSettings.addEventListener("submit", (e) => {
+      e.preventDefault();
+      showToast("¡Configuración y políticas guardadas correctamente!");
+    });
+  }
+}
+
+function renderAdminAll() {
+  renderAdminDashboard();
+  renderAdminProducts();
+  renderAdminOrders();
+  renderAdminUsers();
+}
+
+function renderAdminDashboard() {
+  const alertList = document.getElementById("admin-low-stock-alert-list");
+  const prods = getProductsList();
+
+  if (alertList) {
+    alertList.innerHTML = "";
+    const lowStockItems = prods.filter(p => p.stock <= 5);
+
+    if (lowStockItems.length === 0) {
+      alertList.innerHTML = `<div style="font-size: 13px; color: var(--primary-neon);">¡Todo el inventario cuenta con stock óptimo!</div>`;
+    } else {
+      lowStockItems.forEach(p => {
+        const item = document.createElement("div");
+        item.className = "alert-item";
+        item.innerHTML = `
+          <div>
+            <strong>${p.name}</strong> (${p.category})
+          </div>
+          <span class="alert-stock-tag">${p.stock} unid.</span>
+        `;
+        alertList.appendChild(item);
+      });
+    }
+  }
+
+  document.getElementById("stat-total-products").textContent = `${prods.length} Productos`;
+  document.getElementById("stat-total-orders").textContent = `${state.orders.length} Pedidos`;
+  document.getElementById("stat-total-users").textContent = `${state.adminUsers.length} Usuarios`;
+}
+
+function renderAdminProducts() {
+  const tbody = document.getElementById("admin-products-table-body");
+  if (!tbody) return;
+
+  const prods = getProductsList();
+  tbody.innerHTML = "";
+
+  prods.forEach((p, idx) => {
+    const tr = document.createElement("tr");
+    const isLow = p.stock <= 3;
+    const stockBadge = isLow ? `<span class="status-badge status-blocked">${p.stock} (Bajo)</span>` : `<span class="status-badge status-active">${p.stock} unid.</span>`;
+
+    tr.innerHTML = `
+      <td>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <img src="${p.image}" alt="" style="width: 36px; height: 36px; object-fit: contain; border-radius: 6px; background: var(--bg-surface); padding: 2px;">
+          <strong style="color: var(--text-primary); font-size: 13px;">${p.name}</strong>
+        </div>
+      </td>
+      <td>${p.category}</td>
+      <td style="font-weight: 800; color: var(--primary-neon);">$${p.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+      <td>${stockBadge}</td>
+      <td><i data-lucide="star" style="width: 12px; height: 12px; fill: #eab308; color: #eab308;"></i> ${p.rating}</td>
+      <td>
+        <button class="btn-action-icon btn-edit-prod" data-id="${p.id}" title="Editar Componente">
+          <i data-lucide="edit-3"></i>
+        </button>
+        <button class="btn-action-icon danger btn-del-prod" data-id="${p.id}" title="Eliminar Componente">
+          <i data-lucide="trash-2"></i>
+        </button>
+      </td>
+    `;
+
+    tr.querySelector(".btn-edit-prod").addEventListener("click", () => editAdminProduct(p));
+    tr.querySelector(".btn-del-prod").addEventListener("click", () => deleteAdminProduct(idx));
+
+    tbody.appendChild(tr);
+  });
+
+  refreshLucideIcons();
+}
+
+function editAdminProduct(p) {
+  const modalProd = document.getElementById("admin-product-modal");
+  if (!modalProd) return;
+
+  document.getElementById("admin-prod-modal-title").textContent = "Editar Componente";
+  document.getElementById("prod-form-id").value = p.id;
+  document.getElementById("prod-form-name").value = p.name;
+  document.getElementById("prod-form-category").value = p.category;
+  document.getElementById("prod-form-price").value = p.price;
+  document.getElementById("prod-form-stock").value = p.stock;
+  document.getElementById("prod-form-rating").value = p.rating || 4.8;
+  document.getElementById("prod-form-image").value = p.image;
+  document.getElementById("prod-form-desc").value = p.description;
+
+  modalProd.classList.add("active");
+  refreshLucideIcons();
+}
+
+function saveAdminProduct() {
+  const id = document.getElementById("prod-form-id").value;
+  const name = document.getElementById("prod-form-name").value.trim();
+  const category = document.getElementById("prod-form-category").value;
+  const price = parseFloat(document.getElementById("prod-form-price").value);
+  const stock = parseInt(document.getElementById("prod-form-stock").value, 10);
+  const rating = parseFloat(document.getElementById("prod-form-rating").value) || 4.8;
+  const image = document.getElementById("prod-form-image").value.trim();
+  const description = document.getElementById("prod-form-desc").value.trim();
+
+  const prods = getProductsList();
+
+  if (id) {
+    // Update existing
+    const existing = prods.find(p => p.id === id);
+    if (existing) {
+      existing.name = name;
+      existing.category = category;
+      existing.price = price;
+      existing.stock = stock;
+      existing.rating = rating;
+      existing.image = image;
+      existing.description = description;
+    }
+    showToast(`¡Componente ${name} actualizado!`);
+  } else {
+    // Add new
+    const newProd = {
+      id: "comp-" + Date.now(),
+      name: name,
+      category: category,
+      price: price,
+      stock: stock,
+      rating: rating,
+      reviewsCount: 1,
+      image: image,
+      description: description,
+      specs: { "Garantía": "1 Año Oficial PC MASTERS" }
+    };
+    prods.unshift(newProd);
+    showToast(`¡Componente ${name} añadido al catálogo!`);
+  }
+
+  document.getElementById("admin-product-modal").classList.remove("active");
+  renderCatalog();
+  renderAdminProducts();
+  renderAdminDashboard();
+}
+
+function deleteAdminProduct(idx) {
+  const prods = getProductsList();
+  if (confirm(`¿Estás seguro de eliminar "${prods[idx].name}" del inventario?`)) {
+    const name = prods[idx].name;
+    prods.splice(idx, 1);
+    renderCatalog();
+    renderAdminProducts();
+    renderAdminDashboard();
+    showToast(`Producto ${name} eliminado.`);
+  }
+}
+
+function renderAdminOrders() {
+  const tbody = document.getElementById("admin-orders-table-body");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  state.orders.forEach((o, idx) => {
+    const tr = document.createElement("tr");
+
+    let statusClass = "status-pending";
+    if (o.status === "Pagado") statusClass = "status-paid";
+    if (o.status === "En camino") statusClass = "status-shipped";
+    if (o.status === "Entregado") statusClass = "status-delivered";
+    if (o.status === "Cancelado") statusClass = "status-cancelled";
+
+    tr.innerHTML = `
+      <td style="font-weight: 800; color: var(--primary-neon);">${o.id}</td>
+      <td>${o.date}</td>
+      <td><strong>${o.customer}</strong></td>
+      <td style="font-weight: 800;">$${o.total.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+      <td>${o.method}</td>
+      <td><span class="status-badge ${statusClass}">${o.status}</span></td>
+      <td>
+        <select class="sort-select select-order-status" data-idx="${idx}" style="padding: 4px 8px; font-size: 12px;">
+          <option value="Pendiente" ${o.status === "Pendiente" ? "selected" : ""}>Pendiente</option>
+          <option value="Pagado" ${o.status === "Pagado" ? "selected" : ""}>Pagado</option>
+          <option value="En camino" ${o.status === "En camino" ? "selected" : ""}>En camino</option>
+          <option value="Entregado" ${o.status === "Entregado" ? "selected" : ""}>Entregado</option>
+          <option value="Cancelado" ${o.status === "Cancelado" ? "selected" : ""}>Cancelado</option>
+        </select>
+      </td>
+    `;
+
+    tr.querySelector(".select-order-status").addEventListener("change", (e) => {
+      state.orders[idx].status = e.target.value;
+      localStorage.setItem("pcm_orders", JSON.stringify(state.orders));
+      renderAdminOrders();
+      showToast(`Estado del pedido ${o.id} actualizado a ${e.target.value}`);
+    });
+
+    tbody.appendChild(tr);
+  });
+
+  refreshLucideIcons();
+}
+
+function renderAdminUsers() {
+  const tbody = document.getElementById("admin-users-table-body");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  state.adminUsers.forEach((u, idx) => {
+    const tr = document.createElement("tr");
+
+    const roleBadge = u.role === "Admin" ? `<span class="status-badge status-admin">SuperAdmin</span>` : `<span class="status-badge status-paid">${u.role}</span>`;
+    const statusBadge = u.status === "Activo" ? `<span class="status-badge status-active">Activo</span>` : `<span class="status-badge status-blocked">Bloqueado</span>`;
+
+    tr.innerHTML = `
+      <td><strong>@${u.username}</strong></td>
+      <td>${u.name || u.username}</td>
+      <td>${u.email}</td>
+      <td>${roleBadge}</td>
+      <td>${statusBadge}</td>
+      <td>${u.createdAt}</td>
+      <td>
+        ${u.role !== "Admin" ? `
+          <button class="btn-action-icon ${u.status === "Activo" ? "danger" : ""}" title="${u.status === "Activo" ? "Bloquear Cuenta" : "Activar Cuenta"}">
+            <i data-lucide="${u.status === "Activo" ? "user-x" : "user-check"}"></i>
+          </button>
+        ` : `<span style="font-size: 11px; color: var(--text-muted);">Protegido</span>`}
+      </td>
+    `;
+
+    const btnToggle = tr.querySelector(".btn-action-icon");
+    if (btnToggle) {
+      btnToggle.addEventListener("click", () => {
+        state.adminUsers[idx].status = state.adminUsers[idx].status === "Activo" ? "Bloqueado" : "Activo";
+        localStorage.setItem("pcm_admin_users", JSON.stringify(state.adminUsers));
+        renderAdminUsers();
+        showToast(`Estado de @${u.username} cambiado a ${state.adminUsers[idx].status}`);
+      });
+    }
+
+    tbody.appendChild(tr);
+  });
+
+  refreshLucideIcons();
 }

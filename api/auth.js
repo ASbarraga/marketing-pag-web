@@ -3,16 +3,37 @@ const path = require('path');
 
 const DB_FILE = path.join('/tmp', 'users_db.json');
 
+const DEFAULT_ADMIN = {
+  id: "usr_admin_001",
+  username: "ASbarrag",
+  password: "Sebas1307",
+  name: "Antonio Barragán",
+  email: "asbarraganc@ube.edu.ec",
+  role: "Admin",
+  status: "Activo",
+  createdAt: "2026-08-20T12:00:00.000Z",
+  lastAccess: new Date().toISOString()
+};
+
 function getUsers() {
   try {
     if (fs.existsSync(DB_FILE)) {
       const data = fs.readFileSync(DB_FILE, 'utf8');
-      return JSON.parse(data);
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        if (!parsed.some(u => u.username.toLowerCase() === 'asbarrag')) {
+          parsed.unshift(DEFAULT_ADMIN);
+          saveUsers(parsed);
+        }
+        return parsed;
+      }
     }
   } catch (err) {
     console.error('Error reading users db:', err);
   }
-  return [];
+  const initial = [DEFAULT_ADMIN];
+  saveUsers(initial);
+  return initial;
 }
 
 function saveUsers(users) {
@@ -56,7 +77,12 @@ module.exports = async (req, res) => {
         id: 'usr_' + Date.now(),
         username: cleanUsername,
         password: password,
-        createdAt: new Date().toISOString()
+        name: cleanUsername,
+        email: cleanUsername.toLowerCase() + '@pcmasters.com',
+        role: 'Client',
+        status: 'Activo',
+        createdAt: new Date().toISOString(),
+        lastAccess: new Date().toISOString()
       };
 
       users.push(newUser);
@@ -65,7 +91,14 @@ module.exports = async (req, res) => {
       return res.status(200).json({
         success: true,
         message: 'Cuenta creada con éxito',
-        user: { username: newUser.username }
+        user: {
+          id: newUser.id,
+          username: newUser.username,
+          name: newUser.name,
+          email: newUser.email,
+          role: newUser.role,
+          status: newUser.status
+        }
       });
     } else if (action === 'login') {
       if (!username || !password) {
@@ -81,15 +114,33 @@ module.exports = async (req, res) => {
         return res.status(401).json({ error: 'Nombre de usuario o contraseña incorrectos' });
       }
 
+      foundUser.lastAccess = new Date().toISOString();
+      saveUsers(users);
+
       return res.status(200).json({
         success: true,
         message: 'Inicio de sesión exitoso',
-        user: { username: foundUser.username }
+        user: {
+          id: foundUser.id,
+          username: foundUser.username,
+          name: foundUser.name || foundUser.username,
+          email: foundUser.email || (foundUser.username + '@pcmasters.com'),
+          role: foundUser.role || (foundUser.username.toLowerCase() === 'asbarrag' ? 'Admin' : 'Client'),
+          status: foundUser.status || 'Activo'
+        }
       });
     } else if (action === 'list') {
       return res.status(200).json({
         success: true,
-        users: users.map(u => ({ username: u.username, createdAt: u.createdAt }))
+        users: users.map(u => ({
+          id: u.id,
+          username: u.username,
+          name: u.name || u.username,
+          email: u.email || (u.username + '@pcmasters.com'),
+          role: u.role || 'Client',
+          status: u.status || 'Activo',
+          createdAt: u.createdAt
+        }))
       });
     }
 

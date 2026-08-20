@@ -23,7 +23,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="PC MASTERS - La mejor tienda de hardware de alto rendimiento. Tarjetas gráficas, procesadores, memorias RAM, gabinetes, teclados, mouse y laptops.">
   <title>PC MASTERS | Tienda de Tecnología & Hardware</title>
-  <link rel="stylesheet" href="index.css?v=4">
+  <link rel="stylesheet" href="index.css?v=5">
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
@@ -66,6 +66,9 @@
       <button class="nav-btn btn-cart-nav" id="btn-nav-cart" data-target="view-cart">
         <i data-lucide="shopping-cart"></i> Carrito
         <span class="badge" id="cart-badge-count">0</span>
+      </button>
+      <button class="nav-btn btn-admin-nav" id="btn-nav-admin" data-target="view-admin" style="display:none;">
+        <i data-lucide="shield"></i> Panel Admin
       </button>
 
       <div id="auth-header-container">
@@ -121,7 +124,6 @@
         </div>
       </div>
 
-      <!-- SOBRE LA PÁGINA -->
       <div class="info-card">
         <h3 class="info-card-title"><i data-lucide="globe"></i> Sobre la Plataforma PC MASTERS</h3>
         <p class="info-card-text">
@@ -132,7 +134,6 @@
         </p>
       </div>
 
-      <!-- MISIÓN Y VISIÓN -->
       <div class="grid-2-cols" style="margin-top: 24px;">
         <div class="info-card highlight-border">
           <div class="info-icon-badge"><i data-lucide="target"></i></div>
@@ -151,7 +152,6 @@
         </div>
       </div>
 
-      <!-- CREADORES DEL PROYECTO -->
       <div class="info-card" style="margin-top: 24px;">
         <h3 class="info-card-title"><i data-lucide="users"></i> Creadores del Proyecto</h3>
         <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
@@ -179,7 +179,6 @@
         </div>
       </div>
 
-      <!-- CONTACTOS Y UBICACIÓN -->
       <div class="grid-2-cols" style="margin-top: 24px;">
         <div class="info-card">
           <h3 class="info-card-title"><i data-lucide="phone-call"></i> Contacto Oficial</h3>
@@ -209,7 +208,7 @@
             <i data-lucide="mail"></i>
             <div>
               <span class="contact-label">Correo Institucional:</span>
-              <span class="contact-value">abarraganube@gmail.com</span>
+              <span class="contact-value">asbarraganc@ube.edu.ec</span>
             </div>
           </div>
         </div>
@@ -241,7 +240,6 @@
         </div>
       </div>
 
-      <!-- TÉRMINOS Y CONDICIONES -->
       <div class="info-card" style="margin-top: 24px;">
         <h3 class="info-card-title"><i data-lucide="file-text"></i> Términos y Condiciones del Servicio</h3>
         <div class="terms-box">
@@ -346,7 +344,7 @@
               <label class="form-label" for="card-name">Nombre del Titular</label>
               <div class="input-with-icon">
                 <i data-lucide="user"></i>
-                <input type="text" id="card-name" class="form-input" placeholder="ALEXIS BARRAGAN" required>
+                <input type="text" id="card-name" class="form-input" placeholder="ANTONIO BARRAGAN" required>
               </div>
             </div>
 
@@ -363,6 +361,249 @@
 
             <button type="submit" class="btn-submit-payment" id="btn-submit-payment">
               <i data-lucide="shield-check"></i> Pagar $<span id="checkout-btn-total">0.00</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- VISTA 5: PANEL DE ADMINISTRADOR (DASHBOARD ADMIN) -->
+    <section id="view-admin" class="view">
+      <div class="hero-banner" style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(14, 20, 16, 0.95) 100%);">
+        <div>
+          <div class="hero-tag" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #ef4444;">
+            <i data-lucide="shield"></i> SuperAdmin Control Panel
+          </div>
+          <h2 class="hero-title">Panel de Control <span>Administrador</span></h2>
+          <p class="hero-desc">Bienvenido Antonio Barragán (asbarraganc@ube.edu.ec). Gestión de métricas, catálogo, pedidos y usuarios.</p>
+        </div>
+      </div>
+
+      <!-- ADMIN NAVIGATION SUB-TABS -->
+      <div class="admin-tabs-bar">
+        <button class="admin-tab-btn active" id="admin-tab-dash" data-admintab="dash">
+          <i data-lucide="bar-chart-3"></i> 📊 Métricas Clave
+        </button>
+        <button class="admin-tab-btn" id="admin-tab-products" data-admintab="products">
+          <i data-lucide="package"></i> 📦 Inventario
+        </button>
+        <button class="admin-tab-btn" id="admin-tab-orders" data-admintab="orders">
+          <i data-lucide="shopping-bag"></i> 🛒 Ventas & Pedidos
+        </button>
+        <button class="admin-tab-btn" id="admin-tab-users" data-admintab="users">
+          <i data-lucide="users"></i> 👥 Usuarios & Clientes
+        </button>
+        <button class="admin-tab-btn" id="admin-tab-settings" data-admintab="settings">
+          <i data-lucide="settings"></i> ⚙️ Configuración
+        </button>
+      </div>
+
+      <!-- SECCIÓN 1: METRICAS CLAVE / DASHBOARD -->
+      <div id="admin-sec-dash" class="admin-sec active">
+        <div class="admin-stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon-badge"><i data-lucide="dollar-sign"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Ventas Totales (Mes)</span>
+              <h3 class="stat-value" id="stat-total-sales">$14,890.00</h3>
+              <span class="stat-change positive">+24.5% vs mes anterior</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-badge"><i data-lucide="shopping-cart"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Órdenes Realizadas</span>
+              <h3 class="stat-value" id="stat-total-orders">28 Pedidos</h3>
+              <span class="stat-change positive">8 pendientes de envío</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-badge"><i data-lucide="layers"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Componentes en Catálogo</span>
+              <h3 class="stat-value" id="stat-total-products">35 Productos</h3>
+              <span class="stat-change neutral">7 Categorías activas</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon-badge"><i data-lucide="users"></i></div>
+            <div class="stat-info">
+              <span class="stat-label">Usuarios Registrados</span>
+              <h3 class="stat-value" id="stat-total-users">12 Clientes</h3>
+              <span class="stat-change positive">1 Administrador</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2-cols" style="margin-top: 24px;">
+          <div class="info-card">
+            <h3 class="info-card-title"><i data-lucide="trending-up"></i> Productos Más Vendidos</h3>
+            <div class="sales-bar-list">
+              <div class="sales-bar-item">
+                <div class="sales-bar-info">
+                  <span>NVIDIA RTX 4090 Gaming OC 24GB</span>
+                  <strong>$22,799.88 (12 unidades)</strong>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 92%;"></div></div>
+              </div>
+
+              <div class="sales-bar-item">
+                <div class="sales-bar-info">
+                  <span>AMD Ryzen 7 7800X3D (8 Núcleos)</span>
+                  <strong>$10,139.74 (26 unidades)</strong>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 78%;"></div></div>
+              </div>
+
+              <div class="sales-bar-item">
+                <div class="sales-bar-info">
+                  <span>Wooting 60HE+ Analog Keyboard</span>
+                  <strong>$5,949.66 (34 unidades)</strong>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 65%;"></div></div>
+              </div>
+
+              <div class="sales-bar-item">
+                <div class="sales-bar-info">
+                  <span>Corsair Vengeance DDR5 32GB (2x16GB)</span>
+                  <strong>$3,599.76 (24 unidades)</strong>
+                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 48%;"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <h3 class="info-card-title"><i data-lucide="alert-triangle"></i> Alertas de Stock Bajo</h3>
+            <div id="admin-low-stock-alert-list" class="alert-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2: GESTIÓN DE PRODUCTOS (INVENTARIO) -->
+      <div id="admin-sec-products" class="admin-sec" style="display: none;">
+        <div class="admin-sec-header">
+          <h3 class="info-card-title"><i data-lucide="package"></i> Inventario de Componentes</h3>
+          <button class="btn-checkout-proceed" id="btn-admin-add-product" style="max-width: 220px; padding: 10px 16px;">
+            <i data-lucide="plus-circle"></i> Añadir Producto
+          </button>
+        </div>
+
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Valoración</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-products-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 3: GESTIÓN DE PEDIDOS -->
+      <div id="admin-sec-orders" class="admin-sec" style="display: none;">
+        <h3 class="info-card-title" style="margin-bottom: 20px;"><i data-lucide="shopping-bag"></i> Ventas & Órdenes de Clientes</h3>
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Nº Pedido</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Método</th>
+                <th>Estado</th>
+                <th>Cambiar Estado</th>
+              </tr>
+            </thead>
+            <tbody id="admin-orders-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 4: GESTIÓN DE USUARIOS -->
+      <div id="admin-sec-users" class="admin-sec" style="display: none;">
+        <div class="admin-sec-header">
+          <h3 class="info-card-title"><i data-lucide="users"></i> Cuentas de Usuarios Registrados</h3>
+          <button class="btn-checkout-proceed" id="btn-admin-add-user" style="max-width: 220px; padding: 10px 16px;">
+            <i data-lucide="user-plus"></i> Crear Usuario / Mod
+          </button>
+        </div>
+
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Usuario</th>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Fecha Registro</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-users-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 5: CONFIGURACIÓN -->
+      <div id="admin-sec-settings" class="admin-sec" style="display: none;">
+        <h3 class="info-card-title" style="margin-bottom: 20px;"><i data-lucide="settings"></i> Configuración del Sistema & Políticas</h3>
+        <div class="checkout-form-card">
+          <form id="admin-settings-form">
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label">Nombre de la Tienda</label>
+                <input type="text" id="cfg-store-name" class="form-input no-icon" value="PC MASTERS">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Moneda Oficial</label>
+                <input type="text" id="cfg-currency" class="form-input no-icon" value="USD ($)" readonly>
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label">Teléfono de Soporte</label>
+                <input type="text" id="cfg-phone" class="form-input no-icon" value="+593 98 895 7278">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Correo Oficial</label>
+                <input type="email" id="cfg-email" class="form-input no-icon" value="asbarraganc@ube.edu.ec">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Costo de Envío Estándar</label>
+              <input type="text" id="cfg-shipping" class="form-input no-icon" value="Gratis ($0.00)">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Políticas y Términos de Servicio</label>
+              <textarea id="cfg-terms" class="form-input no-icon" style="height: 100px; resize: vertical;">PC MASTERS es una plataforma e-commerce de demostración interactiva de hardware de alto rendimiento. Los cobros son simulados y el stock es administrado en tiempo real.</textarea>
+            </div>
+
+            <button type="submit" class="btn-submit-payment" style="max-width: 260px;">
+              <i data-lucide="save"></i> Guardar Configuración
             </button>
           </form>
         </div>
@@ -526,6 +767,72 @@
           </div>
         </form>
 
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: CREAR / EDITAR PRODUCTO (ADMIN) -->
+  <div class="modal-overlay" id="admin-product-modal">
+    <div class="modal-content" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 id="admin-prod-modal-title">Añadir Nuevo Producto</h3>
+        <button class="btn-close-modal" id="btn-close-admin-prod-modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body" style="padding: 24px;">
+        <form id="admin-product-form">
+          <input type="hidden" id="prod-form-id" value="">
+          
+          <div class="form-group">
+            <label class="form-label">Nombre del Componente *</label>
+            <input type="text" id="prod-form-name" class="form-input no-icon" placeholder="Ej. NVIDIA RTX 4090" required>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Categoría *</label>
+              <select id="prod-form-category" class="sort-select" style="width: 100%; padding: 12px;">
+                <option value="Tarjetas Gráficas">Tarjetas Gráficas</option>
+                <option value="Procesadores">Procesadores</option>
+                <option value="Memorias RAM">Memorias RAM</option>
+                <option value="Gabinetes">Gabinetes</option>
+                <option value="Teclados">Teclados</option>
+                <option value="Mouse">Mouse</option>
+                <option value="Laptops">Laptops</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Precio ($ USD) *</label>
+              <input type="number" step="0.01" id="prod-form-price" class="form-input no-icon" placeholder="299.99" required>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Stock Disponible *</label>
+              <input type="number" id="prod-form-stock" class="form-input no-icon" placeholder="10" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Valoración (1 a 5)</label>
+              <input type="number" step="0.1" max="5" id="prod-form-rating" class="form-input no-icon" placeholder="4.8" value="4.8">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">URL de la Imagen *</label>
+            <input type="url" id="prod-form-image" class="form-input no-icon" placeholder="https://images.unsplash.com/..." required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Descripción Técnica *</label>
+            <textarea id="prod-form-desc" class="form-input no-icon" style="height: 80px; resize: vertical;" placeholder="Descripción completa del componente..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn-submit-payment" style="margin-top: 10px;">
+            <i data-lucide="check"></i> Guardar Producto
+          </button>
+        </form>
       </div>
     </div>
   </div>
