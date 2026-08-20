@@ -840,10 +840,10 @@ function initCategories() {
   const container = document.getElementById("categories-container");
   if (!container) return;
 
-  container.innerHTML = "";
+  const fragment = document.createDocumentFragment();
 
   CATEGORIES.forEach(cat => {
-    const details = CATEGORY_CARD_DETAILS[cat] || { tag: "HARDWARE", desc: "Componentes de Élite", img: "https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=400" };
+    const details = CATEGORY_CARD_DETAILS[cat] || { tag: "HARDWARE", desc: "Componentes de Élite", img: "https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=75&w=500" };
     const isActive = cat === state.activeCategory;
 
     const card = document.createElement("div");
@@ -857,16 +857,17 @@ function initCategories() {
         <p>${details.desc}</p>
         <button class="btn-promo-action" data-cat="${cat}">Explorar Categoría &rarr;</button>
       </div>
-      <img src="${details.img}" alt="${cat}">
+      <img src="${details.img}" alt="${cat}" loading="lazy" decoding="async">
     `;
 
     card.addEventListener("click", () => {
       selectCategory(cat);
     });
 
-    container.appendChild(card);
+    fragment.appendChild(card);
   });
 
+  container.replaceChildren(fragment);
   updateHeroCategoryShowcase(state.activeCategory);
 }
 
@@ -940,6 +941,8 @@ function renderCatalog() {
     return;
   }
 
+  const fragment = document.createDocumentFragment();
+
   filtered.forEach((prod, idx) => {
     const card = document.createElement("div");
     card.className = "product-card liquid-glass";
@@ -967,7 +970,7 @@ function renderCatalog() {
         <button class="btn-card-favorite" title="Agregar a Favoritos" data-id="${prod.id}">
           <i data-lucide="heart" style="width:16px; height:16px;"></i>
         </button>
-        <img src="${prod.image}" alt="${prod.name}" loading="lazy">
+        <img src="${prod.image}" alt="${prod.name}" loading="lazy" decoding="async">
       </div>
       <div class="card-body">
         <h3 class="card-title">${prod.name}</h3>
@@ -1007,9 +1010,10 @@ function renderCatalog() {
       openProductModal(prod);
     });
 
-    grid.appendChild(card);
+    fragment.appendChild(card);
   });
 
+  grid.replaceChildren(fragment);
   refreshLucideIcons();
 }
 
