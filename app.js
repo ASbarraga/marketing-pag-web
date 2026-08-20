@@ -3,7 +3,8 @@ let state = {
   searchQuery: "",
   sortBy: "popular",
   cart: JSON.parse(localStorage.getItem("pcm_cart")) || [],
-  selectedProductForModal: null
+  selectedProductForModal: null,
+  currentUser: JSON.parse(localStorage.getItem("pcm_current_user")) || null
 };
 
 const CATEGORIES = [
@@ -23,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initSearchAndSort();
   initCheckoutCardInteraction();
   initModals();
+  initAuth();
   renderCatalog();
   updateCartBadge();
   refreshLucideIcons();
@@ -72,6 +74,13 @@ function initNavigation() {
       renderCart();
     } else if (targetViewId === "view-checkout") {
       updateCheckoutTotalBtn();
+      if (state.currentUser) {
+        const cardNameInput = document.getElementById("card-name");
+        if (cardNameInput && !cardNameInput.value) {
+          cardNameInput.value = state.currentUser.username.toUpperCase();
+          cardNameInput.dispatchEvent(new Event("input"));
+        }
+      }
     }
 
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -80,31 +89,15 @@ function initNavigation() {
 
   navBtns.forEach(btn => {
     btn.addEventListener("click", () => {
-      switchView(btn.dataset.target);
+      if (btn.dataset.target) {
+        switchView(btn.dataset.target);
+      }
     });
   });
 
   if (brandLogo) {
     brandLogo.addEventListener("click", () => {
       switchView("view-catalog");
-    });
-  }
-
-  const btnBackCart = document.getElementById("btn-back-to-cart");
-  if (btnBackCart) {
-    btnBackCart.addEventListener("click", () => {
-      switchView("view-cart");
-    });
-  }
-
-  const btnProceedCheckout = document.getElementById("btn-proceed-checkout");
-  if (btnProceedCheckout) {
-    btnProceedCheckout.addEventListener("click", () => {
-      if (state.cart.length === 0) {
-        showToast("Tu carrito está vacío. Agrega productos para proceder al pago.");
-        return;
-      }
-      switchView("view-checkout");
     });
   }
 }
@@ -118,10 +111,19 @@ function initCategories() {
   CATEGORIES.forEach(cat => {
     const pill = document.createElement("button");
     pill.className = `category-pill ${cat === state.activeCategory ? "active" : ""}`;
-    
-    const count = cat === "Todas" ? PRODUCTS_DATA.length : PRODUCTS_DATA.filter(p => p.category === cat).length;
-    
-    pill.innerHTML = `<span>${cat}</span> <span style="font-size: 11px; opacity: 0.8; background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 10px;">${count}</span>`;
+    let iconName = "grid";
+
+    switch (cat) {
+      case "Tarjetas Gráficas": iconName = "monitor"; break;
+      case "Procesadores": iconName = "cpu"; break;
+      case "Memorias RAM": iconName = "hard-drive"; break;
+      case "Gabinetes": iconName = "box"; break;
+      case "Teclados": iconName = "keyboard"; break;
+      case "Mouse": iconName = "mouse"; break;
+      case "Laptops": iconName = "laptop"; break;
+    }
+
+    pill.innerHTML = `<i data-lucide="${iconName}"></i> ${cat} <span style="opacity: 0.6; font-size: 11px;">${getCategoryCount(cat)}</span>`;
 
     pill.addEventListener("click", () => {
       state.activeCategory = cat;
@@ -132,6 +134,11 @@ function initCategories() {
 
     container.appendChild(pill);
   });
+}
+
+function getCategoryCount(cat) {
+  if (cat === "Todas") return PRODUCTS.length;
+  return PRODUCTS.filter(p => p.category === cat).length;
 }
 
 function initSearchAndSort() {
@@ -153,44 +160,48 @@ function initSearchAndSort() {
   }
 }
 
-function getFilteredProducts() {
-  return PRODUCTS_DATA.filter(prod => {
-    const matchesCategory = state.activeCategory === "Todas" || prod.category === state.activeCategory;
-    const matchesSearch = prod.name.toLowerCase().includes(state.searchQuery) ||
-                          prod.category.toLowerCase().includes(state.searchQuery) ||
-                          prod.description.toLowerCase().includes(state.searchQuery);
-    return matchesCategory && matchesSearch;
-  }).sort((a, b) => {
-    if (state.sortBy === "price-low") return a.price - b.price;
-    if (state.sortBy === "price-high") return b.price - a.price;
-    if (state.sortBy === "rating") return b.rating - a.rating;
-    return b.reviewsCount - a.reviewsCount;
-  });
-}
-
 function renderCatalog() {
   const grid = document.getElementById("products-grid");
-  const countNum = document.getElementById("products-count-number");
+  const countText = document.getElementById("products-count-number");
   if (!grid) return;
 
-  const products = getFilteredProducts();
-  if (countNum) countNum.textContent = products.length;
+  let filtered = PRODUCTS.filter(p => {
+    const matchesCat = state.activeCategory === "Todas" || p.category === state.activeCategory;
+    const matchesSearch = p.name.toLowerCase().includes(state.searchQuery) ||
+                          p.category.toLowerCase().includes(state.searchQuery) ||
+                          p.specsMini.toLowerCase().includes(state.searchQuery);
+    return matchesCat && matchesSearch;
+  });
 
-  if (products.length === 0) {
+  if (state.sortBy === "price-low") {
+    filtered.sort((a, b) => a.price - b.price);
+  } else if (state.sortBy === "price-high") {
+    filtered.sort((a, b) => b.price - a.price);
+  } else if (state.sortBy === "rating") {
+    filtered.sort((a, b) => b.rating - a.rating);
+  } else {
+    filtered.sort((a, b) => b.reviewsCount - a.reviewsCount);
+  }
+
+  if (countText) {
+    countText.textContent = filtered.length;
+  }
+
+  grid.innerHTML = "";
+
+  if (filtered.length === 0) {
     grid.innerHTML = `
-      <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--bg-card); border-radius: var(--radius-xl); border: 1px dashed var(--border-color);">
-        <i data-lucide="package-search" style="width: 48px; height: 48px; color: var(--primary-neon); margin-bottom: 12px;"></i>
-        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 6px;">No se encontraron productos</h3>
-        <p style="color: var(--text-muted); font-size: 14px;">Intenta cambiar los términos de búsqueda o seleccionar otra categoría.</p>
+      <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-muted);">
+        <i data-lucide="package-x" style="width: 48px; height: 48px; margin-bottom: 12px; color: var(--primary-neon);"></i>
+        <h3>No se encontraron productos</h3>
+        <p style="font-size: 14px; margin-top: 4px;">Intenta cambiar el término de búsqueda o selecciona otra categoría.</p>
       </div>
     `;
     refreshLucideIcons();
     return;
   }
 
-  grid.innerHTML = "";
-
-  products.forEach(prod => {
+  filtered.forEach(prod => {
     const card = document.createElement("div");
     card.className = "product-card";
 
@@ -204,48 +215,37 @@ function renderCatalog() {
       }
     }
 
-    const firstSpec = Object.entries(prod.specs)[0];
-    const specPreview = firstSpec ? `${firstSpec[0]}: ${firstSpec[1]}` : "";
-
     card.innerHTML = `
       <div class="card-img-container">
         <span class="card-category-badge">${prod.category}</span>
-        <img src="${prod.image}" alt="${prod.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=800'">
+        <img src="${prod.image}" alt="${prod.name}" loading="lazy">
       </div>
       <div class="card-body">
-        <h3 class="card-title" title="${prod.name}">${prod.name}</h3>
+        <h3 class="card-title">${prod.name}</h3>
         <div class="card-rating">
           <div class="stars">${starsHtml}</div>
-          <span>${prod.rating} (${prod.reviewsCount})</span>
+          <span>(${prod.reviewsCount})</span>
         </div>
-        <div class="card-specs-mini">
-          <i data-lucide="cpu" style="width: 12px; height: 12px; vertical-align: middle; color: var(--primary-neon);"></i> ${specPreview}
-        </div>
+        <div class="card-specs-mini">${prod.specsMini}</div>
         <div class="card-footer">
-          <div class="card-price">$${prod.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div>
-          <div style="display: flex; gap: 8px;">
-            <button class="btn-detail-card" title="Ver detalles del producto">
-              <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
+          <span class="card-price">$${prod.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn-detail-card" title="Ver Detalle" data-id="${prod.id}">
+              <i data-lucide="eye"></i>
             </button>
-            <button class="btn-add-cart">
-              <i data-lucide="plus" style="width: 16px; height: 16px;"></i> Agregar
+            <button class="btn-add-cart" data-id="${prod.id}">
+              <i data-lucide="shopping-cart"></i> Agregar
             </button>
           </div>
         </div>
       </div>
     `;
 
-    card.querySelector(".btn-add-cart").addEventListener("click", (e) => {
-      e.stopPropagation();
+    card.querySelector(".btn-add-cart").addEventListener("click", () => {
       addToCart(prod);
     });
 
-    card.querySelector(".btn-detail-card").addEventListener("click", (e) => {
-      e.stopPropagation();
-      openProductModal(prod);
-    });
-
-    card.addEventListener("click", () => {
+    card.querySelector(".btn-detail-card").addEventListener("click", () => {
       openProductModal(prod);
     });
 
@@ -256,40 +256,23 @@ function renderCatalog() {
 }
 
 function addToCart(product) {
-  const existingIndex = state.cart.findIndex(item => item.product.id === product.id);
-
-  if (existingIndex > -1) {
-    state.cart[existingIndex].quantity += 1;
+  const existing = state.cart.find(item => item.id === product.id);
+  if (existing) {
+    existing.qty += 1;
   } else {
-    state.cart.push({ product, quantity: 1 });
+    state.cart.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      category: product.category,
+      qty: 1
+    });
   }
 
   saveCart();
   updateCartBadge();
   showToast(`¡${product.name} agregado al carrito!`);
-}
-
-function removeFromCart(productId) {
-  state.cart = state.cart.filter(item => item.product.id !== productId);
-  saveCart();
-  updateCartBadge();
-  renderCart();
-  showToast("Producto eliminado del carrito.");
-}
-
-function updateCartQuantity(productId, delta) {
-  const item = state.cart.find(i => i.product.id === productId);
-  if (!item) return;
-
-  item.quantity += delta;
-  if (item.quantity <= 0) {
-    removeFromCart(productId);
-    return;
-  }
-
-  saveCart();
-  updateCartBadge();
-  renderCart();
 }
 
 function saveCart() {
@@ -299,193 +282,215 @@ function saveCart() {
 function updateCartBadge() {
   const badge = document.getElementById("cart-badge-count");
   if (!badge) return;
-
-  const totalItems = state.cart.reduce((sum, item) => sum + item.quantity, 0);
-  badge.textContent = totalItems;
-}
-
-function calculateCartTotals() {
-  const subtotal = state.cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
-  return {
-    subtotal,
-    shipping: 0,
-    total: subtotal
-  };
+  const totalQty = state.cart.reduce((sum, item) => sum + item.qty, 0);
+  badge.textContent = totalQty;
 }
 
 function renderCart() {
   const container = document.getElementById("cart-items-container");
-  const subtotalText = document.getElementById("cart-subtotal-text");
-  const totalText = document.getElementById("cart-total-text");
+  const subtotalEl = document.getElementById("cart-subtotal-text");
+  const totalEl = document.getElementById("cart-total-text");
+  const proceedBtn = document.getElementById("btn-proceed-checkout");
+
   if (!container) return;
+
+  container.innerHTML = "";
 
   if (state.cart.length === 0) {
     container.innerHTML = `
-      <div style="text-align: center; padding: 60px 20px; background: var(--bg-card); border-radius: var(--radius-xl); border: 1px dashed var(--border-color);">
+      <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 48px 24px; text-align: center; color: var(--text-muted);">
         <i data-lucide="shopping-cart" style="width: 48px; height: 48px; color: var(--primary-neon); margin-bottom: 12px;"></i>
-        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 6px;">Tu carrito está vacío</h3>
-        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">Explora nuestras 7 categorías de tecnología y agrega tus componentes favoritos.</p>
-        <button class="nav-btn btn-cart-nav" onclick="document.getElementById('btn-nav-home').click()" style="margin: 0 auto; display: inline-flex;">
+        <h3 style="font-size: 20px; color: var(--text-primary);">Tu carrito está vacío</h3>
+        <p style="font-size: 14px; margin-top: 6px;">Explora nuestro catálogo e incluye tus componentes gamer favoritos.</p>
+        <button class="btn-checkout-proceed" style="max-width: 220px; margin: 20px auto 0;" id="btn-empty-go-catalog">
           Ir al Catálogo
         </button>
       </div>
     `;
-    if (subtotalText) subtotalText.textContent = "$0.00";
-    if (totalText) totalText.textContent = "$0.00";
+    const btnGo = document.getElementById("btn-empty-go-catalog");
+    if (btnGo) {
+      btnGo.addEventListener("click", () => {
+        document.getElementById("btn-nav-home").click();
+      });
+    }
+
+    if (subtotalEl) subtotalEl.textContent = "$0.00";
+    if (totalEl) totalEl.textContent = "$0.00";
+    if (proceedBtn) proceedBtn.style.display = "none";
     refreshLucideIcons();
     return;
   }
 
-  container.innerHTML = "";
+  if (proceedBtn) proceedBtn.style.display = "flex";
+
+  let subtotal = 0;
 
   state.cart.forEach(item => {
-    const row = document.createElement("div");
-    row.className = "cart-item";
+    const itemTotal = item.price * item.qty;
+    subtotal += itemTotal;
 
-    const itemTotal = (item.product.price * item.quantity).toLocaleString("en-US", { minimumFractionDigits: 2 });
-
-    row.innerHTML = `
-      <img src="${item.product.image}" alt="${item.product.name}" class="cart-item-img" onerror="this.src='https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=800'">
+    const div = document.createElement("div");
+    div.className = "cart-item";
+    div.innerHTML = `
+      <img src="${item.image}" alt="${item.name}" class="cart-item-img">
       <div class="cart-item-info">
-        <div class="cart-item-category">${item.product.category}</div>
-        <h4 class="cart-item-title">${item.product.name}</h4>
-        <div class="cart-item-price">$${item.product.price.toLocaleString("en-US", { minimumFractionDigits: 2 })} c/u</div>
+        <h4 class="cart-item-title">${item.name}</h4>
+        <div class="cart-item-category">${item.category}</div>
+        <div class="cart-item-price">$${item.price.toLocaleString("en-US", { minimumFractionDigits: 2 })} c/u</div>
       </div>
       <div class="qty-controls">
-        <button class="qty-btn btn-qty-minus"><i data-lucide="minus" style="width: 14px; height: 14px;"></i></button>
-        <span class="qty-val">${item.quantity}</span>
-        <button class="qty-btn btn-qty-plus"><i data-lucide="plus" style="width: 14px; height: 14px;"></i></button>
+        <button class="qty-btn btn-minus" data-id="${item.id}">-</button>
+        <span class="qty-val">${item.qty}</span>
+        <button class="qty-btn btn-plus" data-id="${item.id}">+</button>
       </div>
       <div style="text-align: right; min-width: 90px;">
-        <div style="font-size: 16px; font-weight: 800; color: var(--primary-neon);">$${itemTotal}</div>
+        <div style="font-weight: 800; font-size: 16px; color: var(--primary-neon);">$${itemTotal.toLocaleString("en-US", { minimumFractionDigits: 2 })}</div>
       </div>
-      <button class="btn-remove-item" title="Eliminar ítem">
-        <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
+      <button class="btn-remove-item" data-id="${item.id}" title="Eliminar del Carrito">
+        <i data-lucide="trash-2"></i>
       </button>
     `;
 
-    row.querySelector(".btn-qty-minus").addEventListener("click", () => updateCartQuantity(item.product.id, -1));
-    row.querySelector(".btn-qty-plus").addEventListener("click", () => updateCartQuantity(item.product.id, 1));
-    row.querySelector(".btn-remove-item").addEventListener("click", () => removeFromCart(item.product.id));
+    div.querySelector(".btn-minus").addEventListener("click", () => {
+      if (item.qty > 1) {
+        item.qty -= 1;
+      } else {
+        state.cart = state.cart.filter(i => i.id !== item.id);
+      }
+      saveCart();
+      updateCartBadge();
+      renderCart();
+    });
 
-    container.appendChild(row);
+    div.querySelector(".btn-plus").addEventListener("click", () => {
+      item.qty += 1;
+      saveCart();
+      updateCartBadge();
+      renderCart();
+    });
+
+    div.querySelector(".btn-remove-item").addEventListener("click", () => {
+      state.cart = state.cart.filter(i => i.id !== item.id);
+      saveCart();
+      updateCartBadge();
+      renderCart();
+      showToast("Producto eliminado del carrito");
+    });
+
+    container.appendChild(div);
   });
 
-  const totals = calculateCartTotals();
-  if (subtotalText) subtotalText.textContent = `$${totals.subtotal.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
-  if (totalText) totalText.textContent = `$${totals.total.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
+  if (subtotalEl) subtotalEl.textContent = `$${subtotal.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
+  if (totalEl) totalEl.textContent = `$${subtotal.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
+
+  if (proceedBtn) {
+    proceedBtn.onclick = () => {
+      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+      document.getElementById("view-checkout").classList.add("active");
+      updateCheckoutTotalBtn();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      refreshLucideIcons();
+    };
+  }
 
   refreshLucideIcons();
 }
 
 function updateCheckoutTotalBtn() {
-  const totals = calculateCartTotals();
-  const btnTotal = document.getElementById("checkout-btn-total");
-  if (btnTotal) {
-    btnTotal.textContent = totals.total.toLocaleString("en-US", { minimumFractionDigits: 2 });
+  const total = state.cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+  const totalSpan = document.getElementById("checkout-btn-total");
+  if (totalSpan) {
+    totalSpan.textContent = total.toLocaleString("en-US", { minimumFractionDigits: 2 });
   }
 }
 
 function initCheckoutCardInteraction() {
-  const card3d = document.getElementById("credit-card-3d");
-  const inputNumber = document.getElementById("card-number");
-  const inputName = document.getElementById("card-name");
-  const inputExpiry = document.getElementById("card-expiry");
-  const inputCvv = document.getElementById("card-cvv");
+  const cardNum = document.getElementById("card-number");
+  const cardName = document.getElementById("card-name");
+  const cardExpiry = document.getElementById("card-expiry");
+  const cardCvv = document.getElementById("card-cvv");
 
-  const previewNumber = document.getElementById("cc-number-preview");
-  const previewName = document.getElementById("cc-name-preview");
-  const previewExpiry = document.getElementById("cc-expiry-preview");
-  const previewCvv = document.getElementById("cc-cvv-preview");
+  const prevNum = document.getElementById("cc-number-preview");
+  const prevName = document.getElementById("cc-name-preview");
+  const prevExpiry = document.getElementById("cc-expiry-preview");
+  const prevCvv = document.getElementById("cc-cvv-preview");
+  const creditCard3D = document.getElementById("credit-card-3d");
 
-  const form = document.getElementById("checkout-form");
-
-  if (inputNumber) {
-    inputNumber.addEventListener("input", (e) => {
-      let value = e.target.value.replace(/\D/g, "");
-      value = value.substring(0, 16);
-      let formatted = value.match(/.{1,4}/g)?.join(" ") || "";
-      e.target.value = formatted;
-      if (previewNumber) previewNumber.textContent = formatted || "•••• •••• •••• ••••";
-    });
-  }
-
-  if (inputName) {
-    inputName.addEventListener("input", (e) => {
-      let value = e.target.value.toUpperCase();
-      if (previewName) previewName.textContent = value || "NOMBRE COMPLETO";
-    });
-  }
-
-  if (inputExpiry) {
-    inputExpiry.addEventListener("input", (e) => {
-      let value = e.target.value.replace(/\D/g, "").substring(0, 4);
-      if (value.length >= 3) {
-        value = value.substring(0, 2) + "/" + value.substring(2);
+  if (cardNum) {
+    cardNum.addEventListener("input", (e) => {
+      let val = e.target.value.replace(/\D/g, "");
+      let formatted = "";
+      for (let i = 0; i < val.length; i++) {
+        if (i > 0 && i % 4 === 0) formatted += " ";
+        formatted += val[i];
       }
-      e.target.value = value;
-      if (previewExpiry) previewExpiry.textContent = value || "MM/YY";
+      e.target.value = formatted;
+      prevNum.textContent = formatted || "•••• •••• •••• ••••";
     });
   }
 
-  if (inputCvv) {
-    inputCvv.addEventListener("focus", () => {
-      if (card3d) card3d.classList.add("flipped");
-    });
-    inputCvv.addEventListener("blur", () => {
-      if (card3d) card3d.classList.remove("flipped");
-    });
-    inputCvv.addEventListener("input", (e) => {
-      let value = e.target.value.replace(/\D/g, "").substring(0, 4);
-      e.target.value = value;
-      if (previewCvv) previewCvv.textContent = "•".repeat(value.length) || "•••";
+  if (cardName) {
+    cardName.addEventListener("input", (e) => {
+      prevName.textContent = e.target.value.toUpperCase() || "NOMBRE COMPLETO";
     });
   }
 
-  if (form) {
-    form.addEventListener("submit", (e) => {
+  if (cardExpiry) {
+    cardExpiry.addEventListener("input", (e) => {
+      let val = e.target.value.replace(/\D/g, "");
+      if (val.length >= 3) {
+        val = val.substring(0, 2) + "/" + val.substring(2, 4);
+      }
+      e.target.value = val;
+      prevExpiry.textContent = val || "MM/YY";
+    });
+  }
+
+  if (cardCvv) {
+    cardCvv.addEventListener("focus", () => {
+      if (creditCard3D) creditCard3D.classList.add("flipped");
+    });
+    cardCvv.addEventListener("blur", () => {
+      if (creditCard3D) creditCard3D.classList.remove("flipped");
+    });
+    cardCvv.addEventListener("input", (e) => {
+      prevCvv.textContent = e.target.value || "•••";
+    });
+  }
+
+  const btnBackCart = document.getElementById("btn-back-to-cart");
+  if (btnBackCart) {
+    btnBackCart.addEventListener("click", () => {
+      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+      document.getElementById("view-cart").classList.add("active");
+      refreshLucideIcons();
+    });
+  }
+
+  const checkoutForm = document.getElementById("checkout-form");
+  if (checkoutForm) {
+    checkoutForm.addEventListener("submit", (e) => {
       e.preventDefault();
-
       if (state.cart.length === 0) {
         showToast("Tu carrito está vacío.");
         return;
       }
 
-      const submitBtn = document.getElementById("btn-submit-payment");
-      if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = `<i data-lucide="loader-2" class="spin" style="width:18px; height:18px;"></i> Procesando Pago...`;
-        refreshLucideIcons();
-      }
+      const total = state.cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+      const randomTx = "PCM-" + Math.floor(100000 + Math.random() * 900000);
+      const today = new Date().toLocaleDateString("es-EC");
 
-      setTimeout(() => {
-        const totals = calculateCartTotals();
-        const randomReceiptId = "#PCM-" + Math.floor(100000 + Math.random() * 900000);
-        const todayDate = new Date().toLocaleDateString("es-ES", { year: "numeric", month: "long", day: "numeric" });
+      document.getElementById("receipt-id").textContent = `#${randomTx}`;
+      document.getElementById("receipt-date").textContent = today;
+      document.getElementById("receipt-total").textContent = `$${total.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
 
-        document.getElementById("receipt-id").textContent = randomReceiptId;
-        document.getElementById("receipt-date").textContent = todayDate;
-        document.getElementById("receipt-total").textContent = `$${totals.total.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
+      state.cart = [];
+      saveCart();
+      updateCartBadge();
 
-        state.cart = [];
-        saveCart();
-        updateCartBadge();
-
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = `<i data-lucide="shield-check"></i> Pagar $<span id="checkout-btn-total">0.00</span>`;
-        }
-
-        form.reset();
-        if (previewNumber) previewNumber.textContent = "•••• •••• •••• ••••";
-        if (previewName) previewName.textContent = "NOMBRE COMPLETO";
-        if (previewExpiry) previewExpiry.textContent = "MM/YY";
-        if (previewCvv) previewCvv.textContent = "•••";
-
-        const receiptModal = document.getElementById("receipt-modal");
-        if (receiptModal) receiptModal.classList.add("active");
-        refreshLucideIcons();
-      }, 1500);
+      const receiptModal = document.getElementById("receipt-modal");
+      if (receiptModal) receiptModal.classList.add("active");
+      refreshLucideIcons();
     });
   }
 }
@@ -554,4 +559,245 @@ function openProductModal(prod) {
 
   modal.classList.add("active");
   refreshLucideIcons();
+}
+
+// ----------------------------------------------------
+// AUTENTICACIÓN Y PERSISTENCIA DE CUENTAS
+// ----------------------------------------------------
+function getStoredUsersDB() {
+  return JSON.parse(localStorage.getItem("pcm_users_db")) || [];
+}
+
+function saveStoredUsersDB(users) {
+  localStorage.setItem("pcm_users_db", JSON.stringify(users));
+}
+
+function renderHeaderAuth() {
+  const container = document.getElementById("auth-header-container");
+  if (!container) return;
+
+  if (state.currentUser) {
+    container.innerHTML = `
+      <div class="user-logged-badge" id="user-profile-badge">
+        <i data-lucide="user-check"></i>
+        <span id="header-username-text">${state.currentUser.username}</span>
+        <button class="btn-logout-header" id="btn-logout" title="Cerrar Sesión">
+          <i data-lucide="log-out"></i>
+        </button>
+      </div>
+    `;
+    const btnLogout = document.getElementById("btn-logout");
+    if (btnLogout) {
+      btnLogout.addEventListener("click", logoutUser);
+    }
+  } else {
+    container.innerHTML = `
+      <button class="nav-btn" id="btn-open-auth-modal">
+        <i data-lucide="user"></i> Iniciar Sesión
+      </button>
+    `;
+    const btnOpen = document.getElementById("btn-open-auth-modal");
+    if (btnOpen) {
+      btnOpen.addEventListener("click", () => {
+        openAuthModal("login");
+      });
+    }
+  }
+  refreshLucideIcons();
+}
+
+function openAuthModal(defaultTab = "login") {
+  const modal = document.getElementById("auth-modal");
+  if (!modal) return;
+
+  switchAuthTab(defaultTab);
+  modal.classList.add("active");
+  refreshLucideIcons();
+}
+
+function closeAuthModal() {
+  const modal = document.getElementById("auth-modal");
+  if (modal) modal.classList.remove("active");
+}
+
+function switchAuthTab(tab) {
+  const tabLogin = document.getElementById("tab-btn-login");
+  const tabRegister = document.getElementById("tab-btn-register");
+  const formLogin = document.getElementById("login-form");
+  const formRegister = document.getElementById("register-form");
+  const title = document.getElementById("auth-modal-title");
+
+  if (tab === "login") {
+    if (tabLogin) tabLogin.classList.add("active");
+    if (tabRegister) tabRegister.classList.remove("active");
+    if (formLogin) formLogin.style.display = "block";
+    if (formRegister) formRegister.style.display = "none";
+    if (title) title.textContent = "¡Hola de nuevo!";
+  } else {
+    if (tabRegister) tabRegister.classList.add("active");
+    if (tabLogin) tabLogin.classList.remove("active");
+    if (formRegister) formRegister.style.display = "block";
+    if (formLogin) formLogin.style.display = "none";
+    if (title) title.textContent = "Crear nueva cuenta";
+  }
+}
+
+async function handleLogin(username, password) {
+  const cleanUsername = username.trim();
+  if (!cleanUsername || !password) {
+    showToast("Por favor completa todos los campos");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "login", username: cleanUsername, password: password })
+    });
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      setCurrentUser(data.user);
+      closeAuthModal();
+      showToast(`¡Bienvenido de nuevo, ${data.user.username}!`);
+      return;
+    } else if (res.status === 401 || res.status === 400) {
+      showToast(data.error || "Usuario o contraseña incorrectos");
+      return;
+    }
+  } catch (err) {
+    console.log("Servidor API no disponible, verificando base de datos local:", err);
+  }
+
+  const localUsers = getStoredUsersDB();
+  const found = localUsers.find(
+    u => u.username.toLowerCase() === cleanUsername.toLowerCase() && u.password === password
+  );
+
+  if (found) {
+    setCurrentUser({ username: found.username });
+    closeAuthModal();
+    showToast(`¡Bienvenido de nuevo, ${found.username}!`);
+  } else {
+    showToast("Nombre de usuario o contraseña incorrectos");
+  }
+}
+
+async function handleRegister(username, password, confirmPassword) {
+  const cleanUsername = username.trim();
+  if (!cleanUsername || !password) {
+    showToast("Completa el nombre de usuario y contraseña");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    showToast("Las contraseñas no coinciden");
+    return;
+  }
+
+  if (password.length < 4) {
+    showToast("La contraseña debe tener al menos 4 caracteres");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "register", username: cleanUsername, password: password })
+    });
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      const localUsers = getStoredUsersDB();
+      if (!localUsers.some(u => u.username.toLowerCase() === cleanUsername.toLowerCase())) {
+        localUsers.push({ username: cleanUsername, password: password, createdAt: new Date().toISOString() });
+        saveStoredUsersDB(localUsers);
+      }
+
+      setCurrentUser(data.user);
+      closeAuthModal();
+      showToast(`¡Cuenta creada con éxito! Hola ${data.user.username}`);
+      return;
+    } else if (res.status === 400) {
+      showToast(data.error || "El nombre de usuario ya existe");
+      return;
+    }
+  } catch (err) {
+    console.log("Servidor API fallback a base de datos local:", err);
+  }
+
+  const localUsers = getStoredUsersDB();
+  if (localUsers.some(u => u.username.toLowerCase() === cleanUsername.toLowerCase())) {
+    showToast("El nombre de usuario ya existe. Intenta otro.");
+    return;
+  }
+
+  const newUser = { username: cleanUsername, password: password, createdAt: new Date().toISOString() };
+  localUsers.push(newUser);
+  saveStoredUsersDB(localUsers);
+
+  setCurrentUser({ username: cleanUsername });
+  closeAuthModal();
+  showToast(`¡Cuenta creada con éxito! Hola ${cleanUsername}`);
+}
+
+function setCurrentUser(user) {
+  state.currentUser = user;
+  if (user) {
+    localStorage.setItem("pcm_current_user", JSON.stringify(user));
+  } else {
+    localStorage.removeItem("pcm_current_user");
+  }
+  renderHeaderAuth();
+}
+
+function logoutUser() {
+  setCurrentUser(null);
+  showToast("Sesión cerrada correctamente");
+}
+
+function initAuth() {
+  state.currentUser = JSON.parse(localStorage.getItem("pcm_current_user")) || null;
+  renderHeaderAuth();
+
+  const tabLogin = document.getElementById("tab-btn-login");
+  const tabRegister = document.getElementById("tab-btn-register");
+  const linkToRegister = document.getElementById("link-to-register");
+  const linkToLogin = document.getElementById("link-to-login");
+  const btnCloseModal = document.getElementById("btn-close-auth-modal");
+  const modal = document.getElementById("auth-modal");
+
+  if (tabLogin) tabLogin.addEventListener("click", () => switchAuthTab("login"));
+  if (tabRegister) tabRegister.addEventListener("click", () => switchAuthTab("register"));
+  if (linkToRegister) linkToRegister.addEventListener("click", (e) => { e.preventDefault(); switchAuthTab("register"); });
+  if (linkToLogin) linkToLogin.addEventListener("click", (e) => { e.preventDefault(); switchAuthTab("login"); });
+  if (btnCloseModal) btnCloseModal.addEventListener("click", closeAuthModal);
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeAuthModal();
+    });
+  }
+
+  const loginForm = document.getElementById("login-form");
+  if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const u = document.getElementById("login-username").value;
+      const p = document.getElementById("login-password").value;
+      handleLogin(u, p);
+    });
+  }
+
+  const registerForm = document.getElementById("register-form");
+  if (registerForm) {
+    registerForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const u = document.getElementById("register-username").value;
+      const p = document.getElementById("register-password").value;
+      const c = document.getElementById("register-confirm").value;
+      handleRegister(u, p, c);
+    });
+  }
 }

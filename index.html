@@ -67,6 +67,12 @@
         <i data-lucide="shopping-cart"></i> Carrito
         <span class="badge" id="cart-badge-count">0</span>
       </button>
+
+      <div id="auth-header-container">
+        <button class="nav-btn" id="btn-open-auth-modal">
+          <i data-lucide="user"></i> Iniciar Sesión
+        </button>
+      </div>
     </div>
   </header>
 
@@ -437,6 +443,89 @@
         <button class="btn-checkout-proceed" id="btn-close-receipt">
           <i data-lucide="shopping-bag"></i> Continuar Comprando
         </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="auth-modal">
+    <div class="modal-content" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 id="auth-modal-title">¡Hola de nuevo!</h3>
+        <button class="btn-close-modal" id="btn-close-auth-modal">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body" style="padding: 24px;">
+        
+        <div class="auth-tabs">
+          <button class="auth-tab-btn active" id="tab-btn-login">Iniciar Sesión</button>
+          <button class="auth-tab-btn" id="tab-btn-register">Crear Cuenta</button>
+        </div>
+
+        <form id="login-form" class="auth-form active">
+          <p class="auth-subtitle">¡Nos alegramos mucho de volver a verte!</p>
+
+          <div class="form-group">
+            <label class="form-label" for="login-username">Nombre de usuario *</label>
+            <div class="input-with-icon">
+              <i data-lucide="user"></i>
+              <input type="text" id="login-username" class="form-input" placeholder="Ingresa tu nombre de usuario" required autocomplete="username">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="login-password">Contraseña *</label>
+            <div class="input-with-icon">
+              <i data-lucide="lock"></i>
+              <input type="password" id="login-password" class="form-input" placeholder="Ingresa tu contraseña" required autocomplete="current-password">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit-payment" style="margin-top: 16px;">
+            <i data-lucide="log-in"></i> Iniciar Sesión
+          </button>
+
+          <div class="auth-switch-prompt">
+            ¿Necesitas una cuenta? <a href="#" id="link-to-register">Registrarse</a>
+          </div>
+        </form>
+
+        <form id="register-form" class="auth-form" style="display: none;">
+          <p class="auth-subtitle">Crea tu cuenta para guardar tu carrito y realizar pedidos.</p>
+
+          <div class="form-group">
+            <label class="form-label" for="register-username">Nombre de usuario *</label>
+            <div class="input-with-icon">
+              <i data-lucide="user"></i>
+              <input type="text" id="register-username" class="form-input" placeholder="Crea un nombre de usuario" required autocomplete="username">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="register-password">Contraseña *</label>
+            <div class="input-with-icon">
+              <i data-lucide="lock"></i>
+              <input type="password" id="register-password" class="form-input" placeholder="Crea tu contraseña" required autocomplete="new-password">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="register-confirm">Confirmar Contraseña *</label>
+            <div class="input-with-icon">
+              <i data-lucide="shield-check"></i>
+              <input type="password" id="register-confirm" class="form-input" placeholder="Repite tu contraseña" required autocomplete="new-password">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit-payment" style="margin-top: 16px;">
+            <i data-lucide="user-plus"></i> Crear Cuenta
+          </button>
+
+          <div class="auth-switch-prompt">
+            ¿Ya tienes cuenta? <a href="#" id="link-to-login">Iniciar sesión</a>
+          </div>
+        </form>
+
       </div>
     </div>
   </div>
