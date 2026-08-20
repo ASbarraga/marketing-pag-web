@@ -1119,6 +1119,9 @@ function openAuthModal(defaultTab = "login") {
   if (!modal) return;
 
   switchAuthTab(defaultTab);
+  modal.classList.add("active");
+  refreshLucideIcons();
+}
 function closeAuthModal() {
   const modal = document.getElementById("auth-modal");
   if (modal) modal.classList.remove("active");
