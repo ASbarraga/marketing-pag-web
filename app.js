@@ -654,7 +654,10 @@ function renderHeaderAuth() {
   const btnAdminNav = document.getElementById("btn-nav-admin");
   if (!container) return;
 
-  const isUserAdmin = state.currentUser && (state.currentUser.role === "Admin" || state.currentUser.username.toLowerCase() === "asbarrag");
+  const isUserAdmin = state.currentUser && (
+    state.currentUser.role === "Admin" || 
+    ["asbarrag", "vane123", "zibarraganb_a"].includes(state.currentUser.username.toLowerCase())
+  );
 
   if (btnAdminNav) {
     btnAdminNav.style.display = isUserAdmin ? "inline-flex" : "none";
@@ -736,19 +739,44 @@ async function handleLogin(username, password) {
     return;
   }
 
-  // Check Admin Match
-  if (cleanUsername.toLowerCase() === "asbarrag" && password === "Sebas1307") {
-    const adminUser = {
+  const DEFAULT_ADMINS_LIST = [
+    {
       id: "usr_admin_001",
       username: "ASbarrag",
+      password: "Sebas1307",
       name: "Antonio Barragán",
       email: "asbarraganc@ube.edu.ec",
       role: "Admin",
       status: "Activo"
-    };
-    setCurrentUser(adminUser);
+    },
+    {
+      id: "usr_admin_002",
+      username: "vane123",
+      password: "vane123",
+      name: "Vanesa Salazar",
+      email: "vanesasalazar@ube.edu.ec",
+      role: "Admin",
+      status: "Activo"
+    },
+    {
+      id: "usr_admin_003",
+      username: "Zibarraganb_a",
+      password: "Zibarraganb_a",
+      name: "Zair Barragán",
+      email: "zairbarragan@ube.edu.ec",
+      role: "Admin",
+      status: "Activo"
+    }
+  ];
+
+  const matchedAdmin = DEFAULT_ADMINS_LIST.find(
+    a => a.username.toLowerCase() === cleanUsername.toLowerCase() && a.password === password
+  );
+
+  if (matchedAdmin) {
+    setCurrentUser(matchedAdmin);
     closeAuthModal();
-    showToast("¡Bienvenido SuperAdmin Antonio Barragán!");
+    showToast(`¡Bienvenido Administrador ${matchedAdmin.name}!`);
     document.getElementById("btn-nav-admin").click();
     return;
   }
@@ -765,7 +793,7 @@ async function handleLogin(username, password) {
       setCurrentUser(data.user);
       closeAuthModal();
       showToast(`¡Bienvenido de nuevo, ${data.user.username}!`);
-      if (data.user.role === "Admin" || data.user.username.toLowerCase() === "asbarrag") {
+      if (data.user.role === "Admin" || ["asbarrag", "vane123", "zibarraganb_a"].includes(data.user.username.toLowerCase())) {
         document.getElementById("btn-nav-admin").click();
       }
       return;

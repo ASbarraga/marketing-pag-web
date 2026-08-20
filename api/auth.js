@@ -14,17 +14,41 @@ async function connectToDatabase() {
   return client.db(DB_NAME);
 }
 
-const DEFAULT_ADMIN = {
-  id: "usr_admin_001",
-  username: "ASbarrag",
-  password: "Sebas1307",
-  name: "Antonio Barragán",
-  email: "asbarraganc@ube.edu.ec",
-  role: "Admin",
-  status: "Activo",
-  createdAt: "2026-08-20T12:00:00.000Z",
-  lastAccess: new Date().toISOString()
-};
+const DEFAULT_ADMINS = [
+  {
+    id: "usr_admin_001",
+    username: "ASbarrag",
+    password: "Sebas1307",
+    name: "Antonio Barragán",
+    email: "asbarraganc@ube.edu.ec",
+    role: "Admin",
+    status: "Activo",
+    createdAt: "2026-08-20T12:00:00.000Z",
+    lastAccess: new Date().toISOString()
+  },
+  {
+    id: "usr_admin_002",
+    username: "vane123",
+    password: "vane123",
+    name: "Vanesa Salazar",
+    email: "vanesasalazar@ube.edu.ec",
+    role: "Admin",
+    status: "Activo",
+    createdAt: "2026-08-20T13:00:00.000Z",
+    lastAccess: new Date().toISOString()
+  },
+  {
+    id: "usr_admin_003",
+    username: "Zibarraganb_a",
+    password: "Zibarraganb_a",
+    name: "Zair Barragán",
+    email: "zairbarragan@ube.edu.ec",
+    role: "Admin",
+    status: "Activo",
+    createdAt: "2026-08-20T13:00:00.000Z",
+    lastAccess: new Date().toISOString()
+  }
+];
 
 const INITIAL_PRODUCTS = [
   {
@@ -442,10 +466,12 @@ module.exports = async (req, res) => {
     const usersCollection = db.collection('users');
     const productsCollection = db.collection('products');
 
-    // Ensure default admin exists in MongoDB Atlas
-    const adminInDb = await usersCollection.findOne({ username: { $regex: /^ASbarrag$/i } });
-    if (!adminInDb) {
-      await usersCollection.insertOne(DEFAULT_ADMIN);
+    // Ensure default admins exist in MongoDB Atlas
+    for (const adm of DEFAULT_ADMINS) {
+      const adminInDb = await usersCollection.findOne({ username: { $regex: new RegExp(`^${adm.username}$`, 'i') } });
+      if (!adminInDb) {
+        await usersCollection.insertOne(adm);
+      }
     }
 
     // Auto-seed products in MongoDB Atlas if collection is empty
@@ -498,6 +524,20 @@ module.exports = async (req, res) => {
       }
 
       const cleanUsername = username.trim();
+
+      // Check if matching default admin credentials directly
+      const matchedDefaultAdmin = DEFAULT_ADMINS.find(
+        a => a.username.toLowerCase() === cleanUsername.toLowerCase() && a.password === password
+      );
+
+      if (matchedDefaultAdmin) {
+        return res.status(200).json({
+          success: true,
+          message: 'Inicio de sesión exitoso',
+          user: matchedDefaultAdmin
+        });
+      }
+
       const foundUser = await usersCollection.findOne({
         username: { $regex: new RegExp(`^${cleanUsername}$`, 'i') },
         password: password
@@ -512,6 +552,8 @@ module.exports = async (req, res) => {
         { $set: { lastAccess: new Date().toISOString() } }
       );
 
+      const isAdminUser = foundUser.role === 'Admin' || DEFAULT_ADMINS.some(a => a.username.toLowerCase() === foundUser.username.toLowerCase());
+
       return res.status(200).json({
         success: true,
         message: 'Inicio de sesión exitoso',
@@ -520,7 +562,7 @@ module.exports = async (req, res) => {
           username: foundUser.username,
           name: foundUser.name || foundUser.username,
           email: foundUser.email || (foundUser.username + '@pcmasters.com'),
-          role: foundUser.role || (foundUser.username.toLowerCase() === 'asbarrag' ? 'Admin' : 'Client'),
+          role: isAdminUser ? 'Admin' : (foundUser.role || 'Client'),
           status: foundUser.status || 'Activo'
         }
       });
