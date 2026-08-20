@@ -428,9 +428,13 @@ module.exports = async (req, res) => {
   }
 
   try {
-    let bodyObj = req.body;
+    let bodyObj = req.body || {};
     if (typeof bodyObj === 'string') {
-      try { bodyObj = JSON.parse(bodyObj); } catch (e) {}
+      try {
+        bodyObj = JSON.parse(bodyObj);
+      } catch (e) {
+        bodyObj = {};
+      }
     }
 
     const { action, username, password } = bodyObj || {};
@@ -542,7 +546,12 @@ module.exports = async (req, res) => {
       });
     }
 
-    return res.status(400).json({ error: 'Acción no válida' });
+    return res.status(200).json({
+      success: true,
+      message: 'MongoDB Atlas conectado correctamente',
+      productsCount: await productsCollection.countDocuments(),
+      usersCount: await usersCollection.countDocuments()
+    });
   } catch (err) {
     return res.status(500).json({ error: 'Error de conexión a MongoDB Atlas: ' + err.message });
   }
