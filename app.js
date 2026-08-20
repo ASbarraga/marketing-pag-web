@@ -24,6 +24,29 @@ function getMiniSpecs(prod) {
   return prod.description ? prod.description.substring(0, 65) + "..." : "";
 }
 
+// Clean fake test data
+let storedOrders = JSON.parse(localStorage.getItem("pcm_orders")) || [];
+storedOrders = storedOrders.filter(o => o.id !== "#PCM-784210" && o.id !== "#PCM-659102" && o.id !== "#PCM-412093" && o.id !== "#PCM-302911");
+localStorage.setItem("pcm_orders", JSON.stringify(storedOrders));
+
+let storedAdminUsers = JSON.parse(localStorage.getItem("pcm_admin_users")) || [];
+storedAdminUsers = storedAdminUsers.filter(u => u.username !== "zairbarragan" && u.username !== "vanesasalazar");
+
+const DEFAULT_ADMIN_USER = {
+  id: "usr_admin_001",
+  username: "ASbarrag",
+  name: "Antonio Barragán",
+  email: "asbarraganc@ube.edu.ec",
+  role: "Admin",
+  status: "Activo",
+  createdAt: "20/08/2026"
+};
+
+if (!storedAdminUsers.some(u => u.username.toLowerCase() === "asbarrag")) {
+  storedAdminUsers.unshift(DEFAULT_ADMIN_USER);
+}
+localStorage.setItem("pcm_admin_users", JSON.stringify(storedAdminUsers));
+
 let state = {
   activeCategory: "Todas",
   searchQuery: "",
@@ -31,17 +54,8 @@ let state = {
   cart: JSON.parse(localStorage.getItem("pcm_cart")) || [],
   selectedProductForModal: null,
   currentUser: JSON.parse(localStorage.getItem("pcm_current_user")) || null,
-  orders: JSON.parse(localStorage.getItem("pcm_orders")) || [
-    { id: "#PCM-784210", date: "20/08/2026", customer: "Zair Barragan", total: 1899.99, method: "Tarjeta de Crédito", status: "En camino" },
-    { id: "#PCM-659102", date: "19/08/2026", customer: "Vanesa Salazar", total: 489.99, method: "Tarjeta de Crédito", status: "Entregado" },
-    { id: "#PCM-412093", date: "19/08/2026", customer: "Carlos Mendoza", total: 1199.99, method: "Tarjeta de Crédito", status: "Pendiente" },
-    { id: "#PCM-302911", date: "18/08/2026", customer: "María José", total: 299.99, method: "Tarjeta de Crédito", status: "Pagado" }
-  ],
-  adminUsers: JSON.parse(localStorage.getItem("pcm_admin_users")) || [
-    { id: "usr_admin_001", username: "ASbarrag", name: "Antonio Barragán", email: "asbarraganc@ube.edu.ec", role: "Admin", status: "Activo", createdAt: "20/08/2026" },
-    { id: "usr_002", username: "zairbarragan", name: "Zair Barragán", email: "zair@pcmasters.com", role: "Client", status: "Activo", createdAt: "19/08/2026" },
-    { id: "usr_003", username: "vanesasalazar", name: "Vanesa Salazar", email: "vanesa@pcmasters.com", role: "Client", status: "Activo", createdAt: "18/08/2026" }
-  ]
+  orders: storedOrders,
+  adminUsers: storedAdminUsers
 };
 
 const CATEGORIES = [
@@ -531,7 +545,7 @@ function initCheckoutCardInteraction() {
       document.getElementById("receipt-date").textContent = today;
       document.getElementById("receipt-total").textContent = `$${total.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
 
-      // Save order into state.orders for Admin Dashboard!
+      // Save real customer order
       const newOrder = {
         id: `#${randomTx}`,
         date: today,
@@ -626,11 +640,13 @@ function openProductModal(prod) {
 // AUTENTICACIÓN Y PERSISTENCIA DE CUENTAS
 // ----------------------------------------------------
 function getStoredUsersDB() {
-  return JSON.parse(localStorage.getItem("pcm_users_db")) || [];
+  const users = JSON.parse(localStorage.getItem("pcm_users_db")) || [];
+  return users.filter(u => u.username !== "zairbarragan" && u.username !== "vanesasalazar");
 }
 
 function saveStoredUsersDB(users) {
-  localStorage.setItem("pcm_users_db", JSON.stringify(users));
+  const clean = users.filter(u => u.username !== "zairbarragan" && u.username !== "vanesasalazar");
+  localStorage.setItem("pcm_users_db", JSON.stringify(clean));
 }
 
 function renderHeaderAuth() {
@@ -720,7 +736,7 @@ async function handleLogin(username, password) {
     return;
   }
 
-  // Check Admin Hardcoded Match
+  // Check Admin Match
   if (cleanUsername.toLowerCase() === "asbarrag" && password === "Sebas1307") {
     const adminUser = {
       id: "usr_admin_001",
@@ -806,7 +822,7 @@ async function handleRegister(username, password, confirmPassword) {
     if (res.ok && data.success) {
       const localUsers = getStoredUsersDB();
       if (!localUsers.some(u => u.username.toLowerCase() === cleanUsername.toLowerCase())) {
-        localUsers.push({
+        const newUserObj = {
           id: data.user.id,
           username: cleanUsername,
           password: password,
@@ -814,9 +830,15 @@ async function handleRegister(username, password, confirmPassword) {
           email: cleanUsername.toLowerCase() + "@pcmasters.com",
           role: "Client",
           status: "Activo",
-          createdAt: new Date().toISOString()
-        });
+          createdAt: new Date().toLocaleDateString("es-EC")
+        };
+        localUsers.push(newUserObj);
         saveStoredUsersDB(localUsers);
+
+        if (!state.adminUsers.some(u => u.username.toLowerCase() === cleanUsername.toLowerCase())) {
+          state.adminUsers.push(newUserObj);
+          localStorage.setItem("pcm_admin_users", JSON.stringify(state.adminUsers));
+        }
       }
 
       setCurrentUser(data.user);
@@ -845,10 +867,15 @@ async function handleRegister(username, password, confirmPassword) {
     email: cleanUsername.toLowerCase() + "@pcmasters.com",
     role: "Client",
     status: "Activo",
-    createdAt: new Date().toISOString()
+    createdAt: new Date().toLocaleDateString("es-EC")
   };
   localUsers.push(newUser);
   saveStoredUsersDB(localUsers);
+
+  if (!state.adminUsers.some(u => u.username.toLowerCase() === cleanUsername.toLowerCase())) {
+    state.adminUsers.push(newUser);
+    localStorage.setItem("pcm_admin_users", JSON.stringify(state.adminUsers));
+  }
 
   setCurrentUser(newUser);
   closeAuthModal();
@@ -1033,9 +1060,40 @@ function renderAdminDashboard() {
     }
   }
 
-  document.getElementById("stat-total-products").textContent = `${prods.length} Productos`;
+  const totalSales = state.orders.reduce((sum, o) => sum + (o.total || 0), 0);
+  const pendingOrders = state.orders.filter(o => o.status === "Pendiente").length;
+
+  document.getElementById("stat-total-sales").textContent = `$${totalSales.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
+  document.getElementById("stat-sales-change").textContent = state.orders.length > 0 ? `${state.orders.length} compras computadas` : "Sin compras aún";
   document.getElementById("stat-total-orders").textContent = `${state.orders.length} Pedidos`;
-  document.getElementById("stat-total-users").textContent = `${state.adminUsers.length} Usuarios`;
+  document.getElementById("stat-orders-change").textContent = `${pendingOrders} pendientes de envío`;
+  document.getElementById("stat-total-products").textContent = `${prods.length} Productos`;
+  document.getElementById("stat-total-users").textContent = `${state.adminUsers.length} Usuario${state.adminUsers.length === 1 ? "" : "s"}`;
+
+  const topSalesContainer = document.getElementById("admin-top-sales-list");
+  if (topSalesContainer) {
+    topSalesContainer.innerHTML = "";
+    if (state.orders.length === 0) {
+      topSalesContainer.innerHTML = `
+        <div style="font-size: 13.5px; color: var(--text-muted); padding: 12px 0;">
+          No hay compras registradas aún. Las ventas reales realizadas por los clientes se reflejarán aquí automáticamente.
+        </div>
+      `;
+    } else {
+      state.orders.forEach(o => {
+        const item = document.createElement("div");
+        item.className = "sales-bar-item";
+        item.innerHTML = `
+          <div class="sales-bar-info">
+            <span>Pedido ${o.id} - ${o.customer}</span>
+            <strong>$${o.total.toLocaleString("en-US", { minimumFractionDigits: 2 })} (${o.status})</strong>
+          </div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width: 100%;"></div></div>
+        `;
+        topSalesContainer.appendChild(item);
+      });
+    }
+  }
 }
 
 function renderAdminProducts() {
@@ -1164,6 +1222,17 @@ function renderAdminOrders() {
   if (!tbody) return;
 
   tbody.innerHTML = "";
+
+  if (state.orders.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 32px 16px;">
+          No hay pedidos registrados en la tienda aún. Las compras reales realizadas por los clientes aparecerán aquí.
+        </td>
+      </tr>
+    `;
+    return;
+  }
 
   state.orders.forEach((o, idx) => {
     const tr = document.createElement("tr");

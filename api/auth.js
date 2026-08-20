@@ -19,12 +19,14 @@ function getUsers() {
   try {
     if (fs.existsSync(DB_FILE)) {
       const data = fs.readFileSync(DB_FILE, 'utf8');
-      const parsed = JSON.parse(data);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      let parsed = JSON.parse(data);
+      if (Array.isArray(parsed)) {
+        // Remove fake example accounts
+        parsed = parsed.filter(u => u.username !== 'zairbarragan' && u.username !== 'vanesasalazar');
         if (!parsed.some(u => u.username.toLowerCase() === 'asbarrag')) {
           parsed.unshift(DEFAULT_ADMIN);
-          saveUsers(parsed);
         }
+        saveUsers(parsed);
         return parsed;
       }
     }
