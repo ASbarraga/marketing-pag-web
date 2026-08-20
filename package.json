@@ -1,0 +1,12 @@
+{
+  "name": "pc-masters-web",
+  "version": "1.0.0",
+  "description": "PC MASTERS - Hardware E-Commerce",
+  "main": "api/auth.js",
+  "scripts": {
+    "start": "node api/auth.js"
+  },
+  "dependencies": {
+    "mongodb": "^6.8.0"
+  }
+}

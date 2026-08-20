@@ -1,7 +1,18 @@
-const fs = require('fs');
-const path = require('path');
+const { MongoClient } = require('mongodb');
 
-const DB_FILE = path.join('/tmp', 'users_db.json');
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://abarraganube_db_user:ijDnYn6FJ2SR61Jf@cluster0.mvdttkd.mongodb.net/?retryWrites=true&w=majority";
+const DB_NAME = "pc_masters_db";
+
+let cachedClient = null;
+
+async function connectToDatabase() {
+  if (cachedClient) {
+    return cachedClient.db(DB_NAME);
+  }
+  const client = await MongoClient.connect(MONGODB_URI);
+  cachedClient = client;
+  return client.db(DB_NAME);
+}
 
 const DEFAULT_ADMIN = {
   id: "usr_admin_001",
@@ -14,37 +25,6 @@ const DEFAULT_ADMIN = {
   createdAt: "2026-08-20T12:00:00.000Z",
   lastAccess: new Date().toISOString()
 };
-
-function getUsers() {
-  try {
-    if (fs.existsSync(DB_FILE)) {
-      const data = fs.readFileSync(DB_FILE, 'utf8');
-      let parsed = JSON.parse(data);
-      if (Array.isArray(parsed)) {
-        // Remove fake example accounts
-        parsed = parsed.filter(u => u.username !== 'zairbarragan' && u.username !== 'vanesasalazar');
-        if (!parsed.some(u => u.username.toLowerCase() === 'asbarrag')) {
-          parsed.unshift(DEFAULT_ADMIN);
-        }
-        saveUsers(parsed);
-        return parsed;
-      }
-    }
-  } catch (err) {
-    console.error('Error reading users db:', err);
-  }
-  const initial = [DEFAULT_ADMIN];
-  saveUsers(initial);
-  return initial;
-}
-
-function saveUsers(users) {
-  try {
-    fs.writeFileSync(DB_FILE, JSON.stringify(users, null, 2), 'utf8');
-  } catch (err) {
-    console.error('Error saving users db:', err);
-  }
-}
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -61,7 +41,14 @@ module.exports = async (req, res) => {
 
   try {
     const { action, username, password } = req.body || {};
-    let users = getUsers();
+    const db = await connectToDatabase();
+    const usersCollection = db.collection('users');
+
+    // Ensure default admin exists in MongoDB Atlas
+    const adminInDb = await usersCollection.findOne({ username: { $regex: /^ASbarrag$/i } });
+    if (!adminInDb) {
+      await usersCollection.insertOne(DEFAULT_ADMIN);
+    }
 
     if (action === 'register') {
       if (!username || !password) {
@@ -69,7 +56,7 @@ module.exports = async (req, res) => {
       }
 
       const cleanUsername = username.trim();
-      const existingUser = users.find(u => u.username.toLowerCase() === cleanUsername.toLowerCase());
+      const existingUser = await usersCollection.findOne({ username: { $regex: new RegExp(`^${cleanUsername}$`, 'i') } });
 
       if (existingUser) {
         return res.status(400).json({ error: 'El nombre de usuario ya está registrado' });
@@ -87,8 +74,7 @@ module.exports = async (req, res) => {
         lastAccess: new Date().toISOString()
       };
 
-      users.push(newUser);
-      saveUsers(users);
+      await usersCollection.insertOne(newUser);
 
       return res.status(200).json({
         success: true,
@@ -108,16 +94,19 @@ module.exports = async (req, res) => {
       }
 
       const cleanUsername = username.trim();
-      const foundUser = users.find(
-        u => u.username.toLowerCase() === cleanUsername.toLowerCase() && u.password === password
-      );
+      const foundUser = await usersCollection.findOne({
+        username: { $regex: new RegExp(`^${cleanUsername}$`, 'i') },
+        password: password
+      });
 
       if (!foundUser) {
         return res.status(401).json({ error: 'Nombre de usuario o contraseña incorrectos' });
       }
 
-      foundUser.lastAccess = new Date().toISOString();
-      saveUsers(users);
+      await usersCollection.updateOne(
+        { _id: foundUser._id },
+        { $set: { lastAccess: new Date().toISOString() } }
+      );
 
       return res.status(200).json({
         success: true,
@@ -132,9 +121,10 @@ module.exports = async (req, res) => {
         }
       });
     } else if (action === 'list') {
+      const allUsers = await usersCollection.find({}).toArray();
       return res.status(200).json({
         success: true,
-        users: users.map(u => ({
+        users: allUsers.map(u => ({
           id: u.id,
           username: u.username,
           name: u.name || u.username,
@@ -148,6 +138,6 @@ module.exports = async (req, res) => {
 
     return res.status(400).json({ error: 'Acción no válida' });
   } catch (err) {
-    return res.status(500).json({ error: 'Error interno del servidor: ' + err.message });
+    return res.status(500).json({ error: 'Error de conexión a MongoDB Atlas: ' + err.message });
   }
 };
