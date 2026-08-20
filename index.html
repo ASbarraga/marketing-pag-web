@@ -124,12 +124,16 @@
         </div>
       </div>
 
-      <div class="categories-wrapper">
-        <div class="categories-bar" id="categories-container">
+      <div class="categories-wrapper" style="margin: 32px 0;">
+        <h3 style="font-size: 18px; font-weight: 800; color: #ffffff; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="layers" style="color: var(--primary-neon);"></i> EXPLORA NUESTRAS CATEGORÍAS DE HARDWARE
+        </h3>
+        <div class="promo-banners-grid" id="categories-container">
+          <!-- Dynamically populated with 7 large category cards matching reference UI -->
         </div>
       </div>
 
-      <div class="catalog-toolbar">
+      <div class="catalog-toolbar" id="catalog-toolbar">
         <div class="results-count" id="catalog-count-text">
           Mostrando <strong id="products-count-number">0</strong> productos
         </div>
@@ -145,39 +149,6 @@
       </div>
 
       <div class="products-grid" id="products-grid">
-      </div>
-
-      <!-- SECCIÓN DE 3 BANNERS PROMOCIONALES DE CATEGORÍA (INSPIRADO EN LA IMAGEN) -->
-      <div class="promo-banners-grid" style="margin-top: 40px;">
-        <div class="promo-banner-card lime-accent">
-          <div class="promo-content">
-            <span class="promo-tag">CATEGORÍA TOP</span>
-            <h3>TARJETAS GRÁFICAS</h3>
-            <p>Máximo rendimiento Ray Tracing 4K</p>
-            <button class="btn-promo-action" data-cat="Tarjetas Gráficas">Explorar Categoría &rarr;</button>
-          </div>
-          <img src="https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=400" alt="Tarjetas Gráficas">
-        </div>
-
-        <div class="promo-banner-card dark-accent">
-          <div class="promo-content">
-            <span class="promo-tag">POTENCIA PRO</span>
-            <h3>PROCESADORES</h3>
-            <p>AMD Ryzen 7000 & Intel Core 14ª Gen</p>
-            <button class="btn-promo-action" data-cat="Procesadores">Explorar Categoría &rarr;</button>
-          </div>
-          <img src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&q=80&w=400" alt="Procesadores">
-        </div>
-
-        <div class="promo-banner-card dark-accent">
-          <div class="promo-content">
-            <span class="promo-tag">PORTÁTILES GAMING</span>
-            <h3>LAPTOPS & GEAR</h3>
-            <p>ASUS ROG, Lenovo Legion & Razer</p>
-            <button class="btn-promo-action" data-cat="Laptops">Explorar Categoría &rarr;</button>
-          </div>
-          <img src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&q=80&w=400" alt="Laptops">
-        </div>
       </div>
 
       <!-- BARRA INFERIOR DE 4 GARANTÍAS (IGUAL A LA IMAGEN DE REFERENCIA) -->

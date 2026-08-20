@@ -708,18 +708,61 @@ function initNavigation() {
   }
 }
 
+const CATEGORY_CARD_DETAILS = {
+  "Tarjetas Gráficas": {
+    tag: "CATEGORÍA TOP",
+    desc: "Máximo rendimiento Ray Tracing 4K",
+    img: "https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=400"
+  },
+  "Procesadores": {
+    tag: "POTENCIA PRO",
+    desc: "AMD Ryzen 7000 & Intel Core 14ª Gen",
+    img: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&q=80&w=400"
+  },
+  "Memorias RAM": {
+    tag: "ULTRA VELOCIDAD",
+    desc: "Memorias DDR5 hasta 7200MHz",
+    img: "https://images.unsplash.com/photo-1562976540-1502c2145186?auto=format&fit=crop&q=80&w=400"
+  },
+  "Gabinetes": {
+    tag: "CHASIS PREMIUM",
+    desc: "Doble cámara & Cristal Templado 360°",
+    img: "https://images.unsplash.com/photo-1587202372634-32705e3bf49c?auto=format&fit=crop&q=80&w=400"
+  },
+  "Teclados": {
+    tag: "MECÁNICOS CUSTOM",
+    desc: "Estructura CNC & Switches Gasket",
+    img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&q=80&w=400"
+  },
+  "Mouse": {
+    tag: "ESPORTS GEAR",
+    desc: "Ultra-ligeros desde 53g 4K/8K",
+    img: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&q=80&w=400"
+  },
+  "Laptops": {
+    tag: "PORTÁTILES GAMING",
+    desc: "ASUS ROG, Lenovo Legion & Razer",
+    img: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&q=80&w=400"
+  }
+};
+
 function selectCategory(cat) {
   state.activeCategory = cat;
-  document.querySelectorAll(".category-pill").forEach(p => {
-    if (p.dataset.cat === cat) {
-      p.classList.add("active");
+  document.querySelectorAll(".promo-banner-card").forEach(card => {
+    if (card.dataset.cat === cat) {
+      card.classList.remove("dark-accent");
+      card.classList.add("lime-accent");
     } else {
-      p.classList.remove("active");
+      card.classList.remove("lime-accent");
+      card.classList.add("dark-accent");
     }
   });
   updateHeroCategoryShowcase(cat);
   renderCatalog();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  const catalogSection = document.getElementById("catalog-toolbar");
+  if (catalogSection) {
+    catalogSection.scrollIntoView({ behavior: "smooth" });
+  }
 }
 
 function initCategories() {
@@ -729,28 +772,28 @@ function initCategories() {
   container.innerHTML = "";
 
   CATEGORIES.forEach(cat => {
-    const pill = document.createElement("button");
-    pill.className = `category-pill ${cat === state.activeCategory ? "active" : ""}`;
-    pill.dataset.cat = cat;
-    let iconName = "grid";
+    const details = CATEGORY_CARD_DETAILS[cat] || { tag: "HARDWARE", desc: "Componentes de Élite", img: "https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=400" };
+    const isActive = cat === state.activeCategory;
 
-    switch (cat) {
-      case "Tarjetas Gráficas": iconName = "monitor"; break;
-      case "Procesadores": iconName = "cpu"; break;
-      case "Memorias RAM": iconName = "hard-drive"; break;
-      case "Gabinetes": iconName = "box"; break;
-      case "Teclados": iconName = "keyboard"; break;
-      case "Mouse": iconName = "mouse"; break;
-      case "Laptops": iconName = "laptop"; break;
-    }
+    const card = document.createElement("div");
+    card.className = `promo-banner-card ${isActive ? "lime-accent" : "dark-accent"}`;
+    card.dataset.cat = cat;
 
-    pill.innerHTML = `<i data-lucide="${iconName}"></i> ${cat} <span style="opacity: 0.6; font-size: 11px;">${getCategoryCount(cat)}</span>`;
+    card.innerHTML = `
+      <div class="promo-content">
+        <span class="promo-tag">${details.tag}</span>
+        <h3>${cat.toUpperCase()}</h3>
+        <p>${details.desc}</p>
+        <button class="btn-promo-action" data-cat="${cat}">Explorar Categoría &rarr;</button>
+      </div>
+      <img src="${details.img}" alt="${cat}">
+    `;
 
-    pill.addEventListener("click", () => {
+    card.addEventListener("click", () => {
       selectCategory(cat);
     });
 
-    container.appendChild(pill);
+    container.appendChild(card);
   });
 
   updateHeroCategoryShowcase(state.activeCategory);
