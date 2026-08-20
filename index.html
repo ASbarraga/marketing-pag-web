@@ -124,35 +124,8 @@
         </div>
       </div>
 
-      <div class="categories-wrapper" style="margin: 32px 0;">
-        <h3 style="font-size: 18px; font-weight: 800; color: #ffffff; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-          <i data-lucide="layers" style="color: var(--primary-neon);"></i> EXPLORA NUESTRAS CATEGORÍAS DE HARDWARE
-        </h3>
-        <div class="promo-banners-grid" id="categories-container">
-          <!-- Dynamically populated with 7 large category cards matching reference UI -->
-        </div>
-      </div>
-
-      <div class="catalog-toolbar" id="catalog-toolbar">
-        <div class="results-count" id="catalog-count-text">
-          Mostrando <strong id="products-count-number">0</strong> productos
-        </div>
-        <div class="sort-wrapper">
-          <label for="sort-select">Ordenar por:</label>
-          <select id="sort-select" class="sort-select">
-            <option value="popular">Recomendados</option>
-            <option value="price-low">Precio: Menor a Mayor</option>
-            <option value="price-high">Precio: Mayor a Menor</option>
-            <option value="rating">Mejor Valorados</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="products-grid" id="products-grid">
-      </div>
-
-      <!-- BARRA INFERIOR DE 4 GARANTÍAS (IGUAL A LA IMAGEN DE REFERENCIA) -->
-      <div class="trust-features-bar liquid-glass" style="margin-top: 36px; padding: 24px 32px;">
+      <!-- BARRA DE 4 GARANTÍAS (UBICADA ARRIBA DE LAS CATEGORÍAS) -->
+      <div class="trust-features-bar liquid-glass" style="margin: 28px 0; padding: 24px 32px;">
         <div class="trust-feature-item">
           <i data-lucide="package" style="color: var(--primary-neon); width: 24px; height: 24px;"></i>
           <div>
@@ -184,6 +157,33 @@
             <p style="font-size: 12px; color: var(--text-muted);">Asesoría experta en Ecuador</p>
           </div>
         </div>
+      </div>
+
+      <div class="categories-wrapper" style="margin: 32px 0;">
+        <h3 style="font-size: 18px; font-weight: 800; color: #ffffff; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="layers" style="color: var(--primary-neon);"></i> EXPLORA NUESTRAS CATEGORÍAS DE HARDWARE
+        </h3>
+        <div class="promo-banners-grid" id="categories-container">
+          <!-- Dynamically populated with 7 large category cards matching reference UI -->
+        </div>
+      </div>
+
+      <div class="catalog-toolbar" id="catalog-toolbar">
+        <div class="results-count" id="catalog-count-text">
+          Mostrando <strong id="products-count-number">0</strong> productos
+        </div>
+        <div class="sort-wrapper">
+          <label for="sort-select">Ordenar por:</label>
+          <select id="sort-select" class="sort-select">
+            <option value="popular">Recomendados</option>
+            <option value="price-low">Precio: Menor a Mayor</option>
+            <option value="price-high">Precio: Mayor a Menor</option>
+            <option value="rating">Mejor Valorados</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="products-grid" id="products-grid">
       </div>
 
       <!-- SECCIÓN 01, 02, 03: FEATURE SPOTLIGHTS -->
