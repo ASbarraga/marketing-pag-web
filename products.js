@@ -595,3 +595,9 @@ const PRODUCTS_DATA = [
     stock: 7
   }
 ];
+
+const PRODUCTS = PRODUCTS_DATA;
+if (typeof window !== 'undefined') {
+  window.PRODUCTS = PRODUCTS_DATA;
+  window.PRODUCTS_DATA = PRODUCTS_DATA;
+}

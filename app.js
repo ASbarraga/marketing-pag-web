@@ -1,3 +1,5 @@
+const PRODUCTS = (typeof PRODUCTS_DATA !== "undefined") ? PRODUCTS_DATA : ((typeof window !== "undefined" && window.PRODUCTS) ? window.PRODUCTS : []);
+
 let state = {
   activeCategory: "Todas",
   searchQuery: "",
