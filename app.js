@@ -568,28 +568,75 @@ const CATEGORY_SHOWCASE_MAP = {
 };
 
 let currentShowcaseProdId = "gpu-1";
+let autoRotateInterval = null;
+let currentHeroCategoryIndex = 0;
 
 function updateHeroCategoryShowcase(cat) {
   const data = CATEGORY_SHOWCASE_MAP[cat] || CATEGORY_SHOWCASE_MAP["Tarjetas Gráficas"];
   currentShowcaseProdId = data.prodId;
 
-  const tagEl = document.getElementById("hero-category-tag");
-  const brandEl = document.getElementById("hero-brand-name");
-  const titleEl = document.getElementById("hero-product-title");
-  const taglineEl = document.getElementById("hero-tagline");
-  const descEl = document.getElementById("hero-description");
-  const priceEl = document.getElementById("hero-price-tag");
+  const contentContainer = document.querySelector(".hero-showcase-content");
   const imgEl = document.getElementById("hero-floating-img");
 
-  if (tagEl) tagEl.innerHTML = data.tag;
-  if (brandEl) brandEl.textContent = data.brand;
-  if (titleEl) titleEl.textContent = data.title;
-  if (taglineEl) taglineEl.textContent = data.tagline;
-  if (descEl) descEl.textContent = data.desc;
-  if (priceEl) priceEl.textContent = data.price;
-  if (imgEl) imgEl.src = data.img;
+  if (contentContainer && imgEl) {
+    contentContainer.classList.add("hero-fade-out");
+    imgEl.classList.add("hero-fade-out");
 
-  refreshLucideIcons();
+    setTimeout(() => {
+      const tagEl = document.getElementById("hero-category-tag");
+      const brandEl = document.getElementById("hero-brand-name");
+      const titleEl = document.getElementById("hero-product-title");
+      const taglineEl = document.getElementById("hero-tagline");
+      const descEl = document.getElementById("hero-description");
+      const priceEl = document.getElementById("hero-price-tag");
+
+      if (tagEl) tagEl.innerHTML = data.tag;
+      if (brandEl) brandEl.textContent = data.brand;
+      if (titleEl) titleEl.textContent = data.title;
+      if (taglineEl) taglineEl.textContent = data.tagline;
+      if (descEl) descEl.textContent = data.desc;
+      if (priceEl) priceEl.textContent = data.price;
+      if (imgEl) imgEl.src = data.img;
+
+      refreshLucideIcons();
+
+      contentContainer.classList.remove("hero-fade-out");
+      imgEl.classList.remove("hero-fade-out");
+    }, 280);
+  } else {
+    const tagEl = document.getElementById("hero-category-tag");
+    const brandEl = document.getElementById("hero-brand-name");
+    const titleEl = document.getElementById("hero-product-title");
+    const taglineEl = document.getElementById("hero-tagline");
+    const descEl = document.getElementById("hero-description");
+    const priceEl = document.getElementById("hero-price-tag");
+
+    if (tagEl) tagEl.innerHTML = data.tag;
+    if (brandEl) brandEl.textContent = data.brand;
+    if (titleEl) titleEl.textContent = data.title;
+    if (taglineEl) taglineEl.textContent = data.tagline;
+    if (descEl) descEl.textContent = data.desc;
+    if (priceEl) priceEl.textContent = data.price;
+    if (imgEl) imgEl.src = data.img;
+
+    refreshLucideIcons();
+  }
+}
+
+function startHeroAutoRotate() {
+  stopHeroAutoRotate();
+  autoRotateInterval = setInterval(() => {
+    currentHeroCategoryIndex = (currentHeroCategoryIndex + 1) % CATEGORIES.length;
+    const nextCat = CATEGORIES[currentHeroCategoryIndex];
+    selectCategory(nextCat, false);
+  }, 10000);
+}
+
+function stopHeroAutoRotate() {
+  if (autoRotateInterval) {
+    clearInterval(autoRotateInterval);
+    autoRotateInterval = null;
+  }
 }
 
 function initHeroShowcase() {
@@ -616,14 +663,13 @@ function initHeroShowcase() {
     });
   }
 
-  document.querySelectorAll(".btn-promo-action").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const cat = btn.dataset.cat;
-      if (cat) {
-        selectCategory(cat);
-      }
-    });
-  });
+  const heroContainer = document.querySelector(".hero-showcase-container");
+  if (heroContainer) {
+    heroContainer.addEventListener("mouseenter", stopHeroAutoRotate);
+    heroContainer.addEventListener("mouseleave", startHeroAutoRotate);
+  }
+
+  startHeroAutoRotate();
 }
 
 if (document.readyState === "loading") {
@@ -746,8 +792,11 @@ const CATEGORY_CARD_DETAILS = {
   }
 };
 
-function selectCategory(cat) {
+function selectCategory(cat, shouldScroll = true) {
   state.activeCategory = cat;
+  currentHeroCategoryIndex = CATEGORIES.indexOf(cat);
+  if (currentHeroCategoryIndex < 0) currentHeroCategoryIndex = 0;
+
   document.querySelectorAll(".promo-banner-card").forEach(card => {
     if (card.dataset.cat === cat) {
       card.classList.remove("dark-accent");
@@ -759,9 +808,11 @@ function selectCategory(cat) {
   });
   updateHeroCategoryShowcase(cat);
   renderCatalog();
-  const catalogSection = document.getElementById("catalog-toolbar");
-  if (catalogSection) {
-    catalogSection.scrollIntoView({ behavior: "smooth" });
+  if (shouldScroll) {
+    const catalogSection = document.getElementById("catalog-toolbar");
+    if (catalogSection) {
+      catalogSection.scrollIntoView({ behavior: "smooth" });
+    }
   }
 }
 
