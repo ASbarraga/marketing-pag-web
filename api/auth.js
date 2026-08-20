@@ -428,7 +428,12 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { action, username, password } = req.body || {};
+    let bodyObj = req.body;
+    if (typeof bodyObj === 'string') {
+      try { bodyObj = JSON.parse(bodyObj); } catch (e) {}
+    }
+
+    const { action, username, password } = bodyObj || {};
     const db = await connectToDatabase();
     const usersCollection = db.collection('users');
     const productsCollection = db.collection('products');
