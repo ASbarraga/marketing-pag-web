@@ -701,10 +701,6 @@ function openAuthModal(defaultTab = "login") {
   if (!modal) return;
 
   switchAuthTab(defaultTab);
-  modal.classList.add("active");
-  refreshLucideIcons();
-}
-
 function closeAuthModal() {
   const modal = document.getElementById("auth-modal");
   if (modal) modal.classList.remove("active");
@@ -715,6 +711,7 @@ function switchAuthTab(tab) {
   const tabRegister = document.getElementById("tab-btn-register");
   const formLogin = document.getElementById("login-form");
   const formRegister = document.getElementById("register-form");
+  const formRecover = document.getElementById("recover-form");
   const title = document.getElementById("auth-modal-title");
 
   if (tab === "login") {
@@ -722,13 +719,27 @@ function switchAuthTab(tab) {
     if (tabRegister) tabRegister.classList.remove("active");
     if (formLogin) formLogin.style.display = "block";
     if (formRegister) formRegister.style.display = "none";
+    if (formRecover) formRecover.style.display = "none";
     if (title) title.textContent = "¡Hola de nuevo!";
-  } else {
+  } else if (tab === "register") {
     if (tabRegister) tabRegister.classList.add("active");
     if (tabLogin) tabLogin.classList.remove("active");
     if (formRegister) formRegister.style.display = "block";
     if (formLogin) formLogin.style.display = "none";
+    if (formRecover) formRecover.style.display = "none";
     if (title) title.textContent = "Crear nueva cuenta";
+  } else if (tab === "recover") {
+    if (tabLogin) tabLogin.classList.remove("active");
+    if (tabRegister) tabRegister.classList.remove("active");
+    if (formRecover) formRecover.style.display = "block";
+    if (formLogin) formLogin.style.display = "none";
+    if (formRegister) formRegister.style.display = "none";
+    if (title) title.textContent = "Recuperar Contraseña";
+
+    const step1 = document.getElementById("recover-step-1");
+    const step2 = document.getElementById("recover-step-2");
+    if (step1) step1.style.display = "block";
+    if (step2) step2.style.display = "none";
   }
 }
 
@@ -822,10 +833,12 @@ async function handleLogin(username, password) {
   }
 }
 
-async function handleRegister(username, password, confirmPassword) {
+async function handleRegister(username, email, password, confirmPassword) {
   const cleanUsername = username.trim();
-  if (!cleanUsername || !password) {
-    showToast("Completa el nombre de usuario y contraseña");
+  const cleanEmail = email.trim();
+
+  if (!cleanUsername || !cleanEmail || !password) {
+    showToast("Completa tu nombre de usuario, correo y contraseña");
     return;
   }
 
@@ -843,7 +856,7 @@ async function handleRegister(username, password, confirmPassword) {
     const res = await fetch("/api/auth", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "register", username: cleanUsername, password: password })
+      body: JSON.stringify({ action: "register", username: cleanUsername, email: cleanEmail, password: password })
     });
     const data = await res.json();
 
@@ -855,7 +868,7 @@ async function handleRegister(username, password, confirmPassword) {
           username: cleanUsername,
           password: password,
           name: cleanUsername,
-          email: cleanUsername.toLowerCase() + "@pcmasters.com",
+          email: cleanEmail,
           role: "Client",
           status: "Activo",
           createdAt: new Date().toLocaleDateString("es-EC")
@@ -874,7 +887,7 @@ async function handleRegister(username, password, confirmPassword) {
       showToast(`¡Cuenta creada con éxito! Hola ${data.user.username}`);
       return;
     } else if (res.status === 400) {
-      showToast(data.error || "El nombre de usuario ya existe");
+      showToast(data.error || "El nombre de usuario o correo ya existe");
       return;
     }
   } catch (err) {
@@ -882,8 +895,8 @@ async function handleRegister(username, password, confirmPassword) {
   }
 
   const localUsers = getStoredUsersDB();
-  if (localUsers.some(u => u.username.toLowerCase() === cleanUsername.toLowerCase())) {
-    showToast("El nombre de usuario ya existe. Intenta otro.");
+  if (localUsers.some(u => u.username.toLowerCase() === cleanUsername.toLowerCase() || (u.email && u.email.toLowerCase() === cleanEmail.toLowerCase()))) {
+    showToast("El nombre de usuario o correo ya está registrado.");
     return;
   }
 
@@ -892,7 +905,7 @@ async function handleRegister(username, password, confirmPassword) {
     username: cleanUsername,
     password: password,
     name: cleanUsername,
-    email: cleanUsername.toLowerCase() + "@pcmasters.com",
+    email: cleanEmail,
     role: "Client",
     status: "Activo",
     createdAt: new Date().toLocaleDateString("es-EC")
@@ -908,6 +921,112 @@ async function handleRegister(username, password, confirmPassword) {
   setCurrentUser(newUser);
   closeAuthModal();
   showToast(`¡Cuenta creada con éxito! Hola ${cleanUsername}`);
+}
+
+let currentRecoverUser = null;
+
+async function handleVerifyRecover(identifier) {
+  const cleanIdent = identifier.trim();
+  if (!cleanIdent) {
+    showToast("Ingresa tu usuario o correo electrónico");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "recover", identifier: cleanIdent })
+    });
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      currentRecoverUser = data.username;
+      document.getElementById("recover-found-username").textContent = "@" + data.username;
+      document.getElementById("recover-step-1").style.display = "none";
+      document.getElementById("recover-step-2").style.display = "block";
+      showToast(`¡Cuenta verificada para @${data.username}! Ingresa tu nueva contraseña.`);
+      refreshLucideIcons();
+      return;
+    } else {
+      showToast(data.error || "No encontramos ninguna cuenta con ese usuario o correo.");
+      return;
+    }
+  } catch (err) {
+    console.log("Error API recover, buscando en base de datos local:", err);
+  }
+
+  const localUsers = getStoredUsersDB();
+  const found = localUsers.find(
+    u => u.username.toLowerCase() === cleanIdent.toLowerCase() || (u.email && u.email.toLowerCase() === cleanIdent.toLowerCase())
+  );
+
+  if (found) {
+    currentRecoverUser = found.username;
+    document.getElementById("recover-found-username").textContent = "@" + found.username;
+    document.getElementById("recover-step-1").style.display = "none";
+    document.getElementById("recover-step-2").style.display = "block";
+    showToast(`¡Cuenta verificada para @${found.username}! Ingresa tu nueva contraseña.`);
+    refreshLucideIcons();
+  } else {
+    showToast("No encontramos ninguna cuenta con ese usuario o correo.");
+  }
+}
+
+async function handleSaveNewPassword(newPass, confirmPass) {
+  if (!newPass || newPass.length < 4) {
+    showToast("La nueva contraseña debe tener al menos 4 caracteres");
+    return;
+  }
+
+  if (newPass !== confirmPass) {
+    showToast("Las contraseñas no coinciden");
+    return;
+  }
+
+  if (!currentRecoverUser) {
+    showToast("Vuelve a intentar la búsqueda de cuenta.");
+    switchAuthTab("recover");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "reset_password", identifier: currentRecoverUser, newPassword: newPass })
+    });
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      const localUsers = getStoredUsersDB();
+      const idx = localUsers.findIndex(u => u.username.toLowerCase() === currentRecoverUser.toLowerCase());
+      if (idx !== -1) {
+        localUsers[idx].password = newPass;
+        saveStoredUsersDB(localUsers);
+      }
+
+      showToast("¡Contraseña restablecida con éxito! Ya puedes iniciar sesión.");
+      switchAuthTab("login");
+      return;
+    } else {
+      showToast(data.error || "Error al restablecer la contraseña.");
+      return;
+    }
+  } catch (err) {
+    console.log("Error API reset_password, fallback local:", err);
+  }
+
+  const localUsers = getStoredUsersDB();
+  const idx = localUsers.findIndex(u => u.username.toLowerCase() === currentRecoverUser.toLowerCase());
+  if (idx !== -1) {
+    localUsers[idx].password = newPass;
+    saveStoredUsersDB(localUsers);
+    showToast("¡Contraseña restablecida con éxito! Ya puedes iniciar sesión.");
+    switchAuthTab("login");
+  } else {
+    showToast("Error al restablecer contraseña.");
+  }
 }
 
 function setCurrentUser(user) {
@@ -934,6 +1053,8 @@ function initAuth() {
   const tabRegister = document.getElementById("tab-btn-register");
   const linkToRegister = document.getElementById("link-to-register");
   const linkToLogin = document.getElementById("link-to-login");
+  const linkForgotPassword = document.getElementById("link-forgot-password");
+  const linkRecoverBackLogin = document.getElementById("link-recover-back-login");
   const btnCloseModal = document.getElementById("btn-close-auth-modal");
   const modal = document.getElementById("auth-modal");
 
@@ -941,6 +1062,9 @@ function initAuth() {
   if (tabRegister) tabRegister.addEventListener("click", () => switchAuthTab("register"));
   if (linkToRegister) linkToRegister.addEventListener("click", (e) => { e.preventDefault(); switchAuthTab("register"); });
   if (linkToLogin) linkToLogin.addEventListener("click", (e) => { e.preventDefault(); switchAuthTab("login"); });
+  if (linkForgotPassword) linkForgotPassword.addEventListener("click", (e) => { e.preventDefault(); switchAuthTab("recover"); });
+  if (linkRecoverBackLogin) linkRecoverBackLogin.addEventListener("click", (e) => { e.preventDefault(); switchAuthTab("login"); });
+
   if (btnCloseModal) btnCloseModal.addEventListener("click", closeAuthModal);
   if (modal) {
     modal.addEventListener("click", (e) => {
@@ -963,9 +1087,28 @@ function initAuth() {
     registerForm.addEventListener("submit", (e) => {
       e.preventDefault();
       const u = document.getElementById("register-username").value;
+      const m = document.getElementById("register-email").value;
       const p = document.getElementById("register-password").value;
       const c = document.getElementById("register-confirm").value;
-      handleRegister(u, p, c);
+      handleRegister(u, m, p, c);
+    });
+  }
+
+  const recoverForm = document.getElementById("recover-form");
+  if (recoverForm) {
+    recoverForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const ident = document.getElementById("recover-identifier").value;
+      handleVerifyRecover(ident);
+    });
+  }
+
+  const btnSavePass = document.getElementById("btn-save-new-password");
+  if (btnSavePass) {
+    btnSavePass.addEventListener("click", () => {
+      const p1 = document.getElementById("recover-new-password").value;
+      const p2 = document.getElementById("recover-confirm-password").value;
+      handleSaveNewPassword(p1, p2);
     });
   }
 }

@@ -461,7 +461,7 @@ module.exports = async (req, res) => {
       }
     }
 
-    const { action, username, password } = bodyObj || {};
+    const { action, username, password, email, identifier, newPassword } = bodyObj || {};
     const db = await connectToDatabase();
     const usersCollection = db.collection('users');
     const productsCollection = db.collection('products');
@@ -486,10 +486,21 @@ module.exports = async (req, res) => {
       }
 
       const cleanUsername = username.trim();
-      const existingUser = await usersCollection.findOne({ username: { $regex: new RegExp(`^${cleanUsername}$`, 'i') } });
+      const cleanEmail = (email || '').trim().toLowerCase();
+
+      const existingUser = await usersCollection.findOne({
+        $or: [
+          { username: { $regex: new RegExp(`^${cleanUsername}$`, 'i') } },
+          ...(cleanEmail ? [{ email: cleanEmail }] : [])
+        ]
+      });
 
       if (existingUser) {
-        return res.status(400).json({ error: 'El nombre de usuario ya está registrado' });
+        if (existingUser.username.toLowerCase() === cleanUsername.toLowerCase()) {
+          return res.status(400).json({ error: 'El nombre de usuario ya está registrado' });
+        } else {
+          return res.status(400).json({ error: 'El correo electrónico ya está registrado' });
+        }
       }
 
       const newUser = {
@@ -497,7 +508,7 @@ module.exports = async (req, res) => {
         username: cleanUsername,
         password: password,
         name: cleanUsername,
-        email: cleanUsername.toLowerCase() + '@pcmasters.com',
+        email: cleanEmail || (cleanUsername.toLowerCase() + '@pcmasters.com'),
         role: 'Client',
         status: 'Activo',
         createdAt: new Date().toISOString(),
@@ -525,7 +536,6 @@ module.exports = async (req, res) => {
 
       const cleanUsername = username.trim();
 
-      // Check if matching default admin credentials directly
       const matchedDefaultAdmin = DEFAULT_ADMINS.find(
         a => a.username.toLowerCase() === cleanUsername.toLowerCase() && a.password === password
       );
@@ -539,7 +549,10 @@ module.exports = async (req, res) => {
       }
 
       const foundUser = await usersCollection.findOne({
-        username: { $regex: new RegExp(`^${cleanUsername}$`, 'i') },
+        $or: [
+          { username: { $regex: new RegExp(`^${cleanUsername}$`, 'i') } },
+          { email: cleanUsername.toLowerCase() }
+        ],
         password: password
       });
 
@@ -565,6 +578,57 @@ module.exports = async (req, res) => {
           role: isAdminUser ? 'Admin' : (foundUser.role || 'Client'),
           status: foundUser.status || 'Activo'
         }
+      });
+    } else if (action === 'recover') {
+      if (!identifier) {
+        return res.status(400).json({ error: 'Ingresa tu usuario o correo electrónico' });
+      }
+
+      const cleanIdent = identifier.trim().toLowerCase();
+
+      const foundUser = await usersCollection.findOne({
+        $or: [
+          { username: { $regex: new RegExp(`^${cleanIdent}$`, 'i') } },
+          { email: cleanIdent }
+        ]
+      });
+
+      if (!foundUser) {
+        return res.status(404).json({ error: 'No encontramos ninguna cuenta asociada a este usuario o correo' });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: 'Cuenta encontrada',
+        username: foundUser.username,
+        email: foundUser.email
+      });
+    } else if (action === 'reset_password') {
+      if (!identifier || !newPassword) {
+        return res.status(400).json({ error: 'Faltan datos obligatorios para restablecer la contraseña' });
+      }
+
+      const cleanIdent = identifier.trim().toLowerCase();
+
+      const foundUser = await usersCollection.findOne({
+        $or: [
+          { username: { $regex: new RegExp(`^${cleanIdent}$`, 'i') } },
+          { email: cleanIdent }
+        ]
+      });
+
+      if (!foundUser) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+
+      await usersCollection.updateOne(
+        { _id: foundUser._id },
+        { $set: { password: newPassword, lastAccess: new Date().toISOString() } }
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: 'Contraseña restablecida con éxito'
       });
     } else if (action === 'list') {
       const allUsers = await usersCollection.find({}).toArray();
