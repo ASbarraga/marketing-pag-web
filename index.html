@@ -33,52 +33,56 @@
   <!-- End Google Tag Manager (noscript) -->
 
   <header id="main-header">
-    <div class="header-brand" id="btn-brand-logo">
-      <div class="header-brand-icon">
-        <svg class="header-logo-icon-svg" viewBox="0 0 100 100" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Left Ear -->
-          <polygon points="40,8 54,18 44,42 30,32" fill="#050806"/>
-          <!-- Right Ear -->
-          <polygon points="56,14 70,24 60,48 46,38" fill="#050806"/>
-          <!-- Head Main Face -->
-          <polygon points="30,32 60,38 44,82 18,58" fill="#050806"/>
-          <!-- Head 3D Side Face -->
-          <polygon points="60,38 74,52 58,86 44,82" fill="#050806" opacity="0.82"/>
-          <!-- Neon Eye Accent -->
-          <polygon points="34,50 42,52 38,60 30,58" fill="#00ff87"/>
-        </svg>
+    <div class="header-main-row">
+      <div class="header-brand" id="btn-brand-logo">
+        <div class="header-brand-icon">
+          <svg class="header-logo-icon-svg" viewBox="0 0 100 100" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Left Ear -->
+            <polygon points="40,8 54,18 44,42 30,32" fill="#050806"/>
+            <!-- Right Ear -->
+            <polygon points="56,14 70,24 60,48 46,38" fill="#050806"/>
+            <!-- Head Main Face -->
+            <polygon points="30,32 60,38 44,82 18,58" fill="#050806"/>
+            <!-- Head 3D Side Face -->
+            <polygon points="60,38 74,52 58,86 44,82" fill="#050806" opacity="0.82"/>
+            <!-- Neon Eye Accent -->
+            <polygon points="34,50 42,52 38,60 30,58" fill="#00ff87"/>
+          </svg>
+        </div>
+        <h1>PC <span>MASTERS</span></h1>
       </div>
-      <h1>PC <span>MASTERS</span></h1>
-    </div>
 
-    <div class="header-search">
-      <i data-lucide="search"></i>
-      <input type="text" id="search-input" placeholder="Buscar tarjetas, procesadores, laptops, mouse...">
-    </div>
+      <div class="header-search">
+        <i data-lucide="search"></i>
+        <input type="text" id="search-input" placeholder="Buscar tarjetas, procesadores, laptops, mouse...">
+      </div>
 
-    <div class="header-actions">
-      <button class="theme-toggle-btn liquid-glass-toggle" id="btn-theme-toggle" title="Cambiar Modo Claro / Oscuro">
-        <i data-lucide="lightbulb" id="theme-icon-bulb"></i>
-      </button>
-
-      <button class="nav-btn active" id="btn-nav-home" data-target="view-catalog">
-        <i data-lucide="grid"></i> Catálogo
-      </button>
-      <button class="nav-btn" id="btn-nav-info" data-target="view-info">
-        <i data-lucide="info"></i> Información
-      </button>
-      <button class="nav-btn btn-cart-nav" id="btn-nav-cart" data-target="view-cart">
-        <i data-lucide="shopping-cart"></i> Carrito
-        <span class="badge" id="cart-badge-count">0</span>
-      </button>
-      <button class="nav-btn btn-admin-nav" id="btn-nav-admin" data-target="view-admin" style="display:none;">
-        <i data-lucide="shield"></i> Panel Admin
-      </button>
-
-      <div id="auth-header-container">
-        <button class="nav-btn" id="btn-open-auth-modal">
-          <i data-lucide="user"></i> Iniciar Sesión
+      <div class="header-actions">
+        <button class="theme-toggle-btn liquid-glass-toggle" id="btn-theme-toggle" title="Cambiar Modo Claro / Oscuro">
+          <i data-lucide="lightbulb" id="theme-icon-bulb"></i>
         </button>
+
+        <div class="header-nav-links">
+          <button class="nav-btn active" id="btn-nav-home" data-target="view-catalog">
+            <i data-lucide="grid"></i> Catálogo
+          </button>
+          <button class="nav-btn" id="btn-nav-info" data-target="view-info">
+            <i data-lucide="info"></i> Información
+          </button>
+          <button class="nav-btn btn-cart-nav" id="btn-nav-cart" data-target="view-cart">
+            <i data-lucide="shopping-cart"></i> Carrito
+            <span class="badge" id="cart-badge-count">0</span>
+          </button>
+          <button class="nav-btn btn-admin-nav" id="btn-nav-admin" data-target="view-admin" style="display:none;">
+            <i data-lucide="shield"></i> Panel Admin
+          </button>
+        </div>
+
+        <div id="auth-header-container">
+          <button class="nav-btn" id="btn-open-auth-modal">
+            <i data-lucide="user"></i> Iniciar Sesión
+          </button>
+        </div>
       </div>
     </div>
   </header>
