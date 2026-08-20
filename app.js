@@ -1,4 +1,28 @@
-const PRODUCTS = (typeof PRODUCTS_DATA !== "undefined") ? PRODUCTS_DATA : ((typeof window !== "undefined" && window.PRODUCTS) ? window.PRODUCTS : []);
+function getProductsList() {
+  if (typeof PRODUCTS_DATA !== "undefined" && Array.isArray(PRODUCTS_DATA) && PRODUCTS_DATA.length > 0) {
+    return PRODUCTS_DATA;
+  }
+  if (typeof PRODUCTS !== "undefined" && Array.isArray(PRODUCTS) && PRODUCTS.length > 0) {
+    return PRODUCTS;
+  }
+  if (typeof window !== "undefined" && window.PRODUCTS && Array.isArray(window.PRODUCTS) && window.PRODUCTS.length > 0) {
+    return window.PRODUCTS;
+  }
+  if (typeof window !== "undefined" && window.PRODUCTS_DATA && Array.isArray(window.PRODUCTS_DATA) && window.PRODUCTS_DATA.length > 0) {
+    return window.PRODUCTS_DATA;
+  }
+  return [];
+}
+
+function getMiniSpecs(prod) {
+  if (!prod) return "";
+  if (prod.specsMini) return prod.specsMini;
+  if (prod.specs) {
+    const values = Object.values(prod.specs);
+    return values.slice(0, 2).join(" • ");
+  }
+  return prod.description ? prod.description.substring(0, 65) + "..." : "";
+}
 
 let state = {
   activeCategory: "Todas",
@@ -65,10 +89,12 @@ function initNavigation() {
     }
 
     navBtns.forEach(btn => {
-      if (btn.dataset.target === targetViewId) {
-        btn.classList.add("active");
-      } else {
-        btn.classList.remove("active");
+      if (btn.dataset && btn.dataset.target) {
+        if (btn.dataset.target === targetViewId) {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
       }
     });
 
@@ -91,7 +117,7 @@ function initNavigation() {
 
   navBtns.forEach(btn => {
     btn.addEventListener("click", () => {
-      if (btn.dataset.target) {
+      if (btn.dataset && btn.dataset.target) {
         switchView(btn.dataset.target);
       }
     });
@@ -139,8 +165,9 @@ function initCategories() {
 }
 
 function getCategoryCount(cat) {
-  if (cat === "Todas") return PRODUCTS.length;
-  return PRODUCTS.filter(p => p.category === cat).length;
+  const prods = getProductsList();
+  if (cat === "Todas") return prods.length;
+  return prods.filter(p => p.category === cat).length;
 }
 
 function initSearchAndSort() {
@@ -167,11 +194,15 @@ function renderCatalog() {
   const countText = document.getElementById("products-count-number");
   if (!grid) return;
 
-  let filtered = PRODUCTS.filter(p => {
+  const prods = getProductsList();
+
+  let filtered = prods.filter(p => {
     const matchesCat = state.activeCategory === "Todas" || p.category === state.activeCategory;
-    const matchesSearch = p.name.toLowerCase().includes(state.searchQuery) ||
-                          p.category.toLowerCase().includes(state.searchQuery) ||
-                          p.specsMini.toLowerCase().includes(state.searchQuery);
+    const mini = getMiniSpecs(p).toLowerCase();
+    const matchesSearch = !state.searchQuery ||
+                          (p.name && p.name.toLowerCase().includes(state.searchQuery)) ||
+                          (p.category && p.category.toLowerCase().includes(state.searchQuery)) ||
+                          mini.includes(state.searchQuery);
     return matchesCat && matchesSearch;
   });
 
@@ -207,7 +238,7 @@ function renderCatalog() {
     const card = document.createElement("div");
     card.className = "product-card";
 
-    const fullStars = Math.floor(prod.rating);
+    const fullStars = Math.floor(prod.rating || 5);
     let starsHtml = "";
     for (let i = 0; i < 5; i++) {
       if (i < fullStars) {
@@ -228,7 +259,7 @@ function renderCatalog() {
           <div class="stars">${starsHtml}</div>
           <span>(${prod.reviewsCount})</span>
         </div>
-        <div class="card-specs-mini">${prod.specsMini}</div>
+        <div class="card-specs-mini">${getMiniSpecs(prod)}</div>
         <div class="card-footer">
           <span class="card-price">$${prod.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
           <div style="display: flex; gap: 6px;">
@@ -534,7 +565,7 @@ function openProductModal(prod) {
   document.getElementById("modal-product-desc").textContent = prod.description;
 
   const ratingBox = document.getElementById("modal-product-rating");
-  const fullStars = Math.floor(prod.rating);
+  const fullStars = Math.floor(prod.rating || 5);
   let starsHtml = "";
   for (let i = 0; i < 5; i++) {
     if (i < fullStars) {
@@ -547,11 +578,13 @@ function openProductModal(prod) {
 
   const specsTable = document.getElementById("modal-specs-table");
   specsTable.innerHTML = "";
-  Object.entries(prod.specs).forEach(([key, val]) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${key}</td><td>${val}</td>`;
-    specsTable.appendChild(tr);
-  });
+  if (prod.specs) {
+    Object.entries(prod.specs).forEach(([key, val]) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${key}</td><td>${val}</td>`;
+      specsTable.appendChild(tr);
+    });
+  }
 
   const modalAddBtn = document.getElementById("modal-btn-add-cart");
   modalAddBtn.onclick = () => {

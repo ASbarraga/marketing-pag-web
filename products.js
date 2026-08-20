@@ -1,4 +1,4 @@
-const PRODUCTS_DATA = [
+var PRODUCTS_DATA = [
   {
     id: "gpu-1",
     name: "NVIDIA GeForce RTX 4090 Gaming OC 24GB",
@@ -596,7 +596,7 @@ const PRODUCTS_DATA = [
   }
 ];
 
-const PRODUCTS = PRODUCTS_DATA;
+var PRODUCTS = PRODUCTS_DATA;
 if (typeof window !== 'undefined') {
   window.PRODUCTS = PRODUCTS_DATA;
   window.PRODUCTS_DATA = PRODUCTS_DATA;
