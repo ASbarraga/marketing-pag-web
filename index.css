@@ -1,36 +1,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;600;700;800;900&display=swap');
 
 :root {
-  --bg-dark: #050806;
-  --bg-surface: #0e1410;
-  --bg-card: #131c16;
-  --bg-card-hover: #19261e;
+  --bg-dark: #09090b;
+  --bg-surface: #121215;
+  --bg-card: #18181b;
+  --bg-card-hover: #222226;
   
-  --border-color: rgba(34, 197, 94, 0.18);
-  --border-color-hover: rgba(0, 255, 135, 0.45);
+  --border-color: rgba(204, 255, 0, 0.2);
+  --border-color-hover: rgba(204, 255, 0, 0.6);
   
-  --primary-neon: #00ff87;
-  --primary-green: #10b981;
-  --primary-dark-green: #059669;
-  --primary-gradient: linear-gradient(135deg, #00ff87 0%, #10b981 100%);
-  --primary-glow: rgba(0, 255, 135, 0.25);
+  --primary-neon: #ccff00;
+  --primary-green: #a3e635;
+  --primary-dark-green: #84cc16;
+  --primary-gradient: linear-gradient(135deg, #ccff00 0%, #a3e635 100%);
+  --primary-glow: rgba(204, 255, 0, 0.3);
   
   --text-primary: #ffffff;
   --text-secondary: #d1d5db;
-  --text-muted: #808c83;
-  --text-dark: #050806;
+  --text-muted: #8e8e93;
+  --text-dark: #09090b;
   
   --accent-red: #ef4444;
-  --accent-gold: #f59e0b;
+  --accent-gold: #ccff00;
 
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 18px;
   --radius-xl: 24px;
   
-  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-neon: 0 8px 24px rgba(0, 255, 135, 0.15);
-  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.6);
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.6);
+  --shadow-neon: 0 8px 24px rgba(204, 255, 0, 0.25);
+  --shadow-card: 0 12px 36px rgba(0, 0, 0, 0.8);
   
   --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -543,11 +543,163 @@ main#app-content {
 }
 
 .category-pill.active {
-  background: var(--primary-gradient);
+  background: #ccff00;
   border-color: transparent;
-  color: var(--text-dark);
+  color: #09090b;
+  font-weight: 800;
+  box-shadow: 0 4px 18px rgba(204, 255, 0, 0.35);
+}
+
+/* TOP RIGHT TRUST BADGES IN HERO */
+.hero-trust-badges-top {
+  position: absolute;
+  top: 24px;
+  right: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 5;
+}
+
+.trust-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(24, 24, 27, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(204, 255, 0, 0.25);
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 11.5px;
   font-weight: 700;
-  box-shadow: 0 4px 16px var(--primary-glow);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+
+.trust-pill i {
+  color: var(--primary-neon);
+  width: 15px;
+  height: 15px;
+}
+
+/* PROMO CATEGORY BANNERS GRID (MIDDLE OF REFERENCE IMAGE) */
+.promo-banners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.promo-banner-card {
+  padding: 32px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  min-height: 220px;
+  transition: all 0.35s ease;
+  border: 1px solid var(--border-color);
+}
+
+.promo-banner-card.lime-accent {
+  background: linear-gradient(135deg, #ccff00 0%, #a3e635 100%);
+  color: #09090b;
+}
+
+.promo-banner-card.lime-accent h3,
+.promo-banner-card.lime-accent p,
+.promo-banner-card.lime-accent .promo-tag {
+  color: #09090b;
+}
+
+.promo-banner-card.dark-accent {
+  background: rgba(24, 24, 27, 0.75);
+  backdrop-filter: blur(16px);
+  color: #ffffff;
+}
+
+.promo-banner-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(204, 255, 0, 0.25);
+}
+
+.promo-tag {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.promo-banner-card h3 {
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.promo-banner-card p {
+  font-size: 13.5px;
+  opacity: 0.85;
+  margin-bottom: 16px;
+}
+
+.btn-promo-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: #09090b;
+  color: #ccff00;
+  font-weight: 800;
+  font-size: 12.5px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.promo-banner-card.dark-accent .btn-promo-action {
+  background: #ccff00;
+  color: #09090b;
+}
+
+.btn-promo-action:hover {
+  transform: translateX(4px);
+}
+
+.promo-banner-card img {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+  transition: transform 0.4s ease;
+}
+
+.promo-banner-card:hover img {
+  transform: scale(1.08) rotate(-4deg);
+}
+
+/* BOTTOM TRUST FEATURES BAR (BOTTOM OF REFERENCE IMAGE) */
+.trust-features-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  align-items: center;
+}
+
+.trust-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.trust-feature-item strong {
+  font-size: 13.5px;
+  color: #ffffff;
+  display: block;
 }
 
 .catalog-toolbar {

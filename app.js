@@ -458,7 +458,7 @@ if (!storedAdminUsers.some(u => u.username.toLowerCase() === "asbarrag")) {
 localStorage.setItem("pcm_admin_users", JSON.stringify(storedAdminUsers));
 
 let state = {
-  activeCategory: "Todas",
+  activeCategory: "Tarjetas Gráficas",
   searchQuery: "",
   sortBy: "popular",
   cart: JSON.parse(localStorage.getItem("pcm_cart")) || [],
@@ -470,7 +470,6 @@ let state = {
 };
 
 const CATEGORIES = [
-  "Todas",
   "Tarjetas Gráficas",
   "Procesadores",
   "Memorias RAM",
@@ -495,6 +494,104 @@ function initApp() {
   loadProductsFromBackend();
 }
 
+const CATEGORY_SHOWCASE_MAP = {
+  "Tarjetas Gráficas": {
+    tag: "<i data-lucide='zap'></i> TARJETAS GRÁFICAS DE ÉLITE",
+    brand: "NVIDIA & AMD",
+    title: "GeForce RTX 4090 / 5090",
+    tagline: "DOMINA CADA FOTOGRAMA CON POTENCIA SUPREMA",
+    desc: "Arquitectura Ada Lovelace con 24GB GDDR6X, DLSS 3.5 y Ray Tracing de 3ª Gen. Estabilidad térmica de competición para creadores y gamers exigentes.",
+    price: "$1,899.99",
+    img: "https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=800",
+    prodId: "gpu-1"
+  },
+  "Procesadores": {
+    tag: "<i data-lucide='cpu'></i> PROCESADORES DE ÚLTIMA GENERACIÓN",
+    brand: "AMD & INTEL",
+    title: "AMD Ryzen 7 7800X3D",
+    tagline: "EL PROCESADOR NÚMERO 1 PARA GAMING EN EL MUNDO",
+    desc: "Tecnología revolucionaria AMD 3D V-Cache de 96MB de L3 cache con 8 núcleos y 16 hilos. Rendimiento inigualable en títulos AAA.",
+    price: "$389.99",
+    img: "https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&q=80&w=800",
+    prodId: "cpu-1"
+  },
+  "Memorias RAM": {
+    tag: "<i data-lucide='hard-drive'></i> MEMORIAS DDR5 DE ULTRA VELOCIDAD",
+    brand: "CORSAIR & G.SKILL",
+    title: "Dominator Titanium DDR5",
+    tagline: "VELOCIDADES EXTREMAS HASTA 7200MHz",
+    desc: "Memorias de lujo con chips IC seleccionados a mano, iluminación RGB personalizable y perfiles de overclocking XMP 3.0 / EXPO.",
+    price: "$229.99",
+    img: "https://images.unsplash.com/photo-1562976540-1502c2145186?auto=format&fit=crop&q=80&w=800",
+    prodId: "ram-1"
+  },
+  "Gabinetes": {
+    tag: "<i data-lucide='box'></i> CHASIS Y GABINETES PREMIUM",
+    brand: "NZXT & LIAN LI",
+    title: "NZXT H9 Elite Dual-Chamber",
+    tagline: "VISIÓN PANORÁMICA DE CRISTAL TEMPLADO 360°",
+    desc: "Diseño doble cámara con paneles de vidrio ininterrumpido, soporte para radiadores triples de 360mm y gestión de cables profesional.",
+    price: "$239.99",
+    img: "https://images.unsplash.com/photo-1587202372634-32705e3bf49c?auto=format&fit=crop&q=80&w=800",
+    prodId: "case-1"
+  },
+  "Teclados": {
+    tag: "<i data-lucide='keyboard'></i> TECLADOS MECÁNICOS CUSTOM",
+    brand: "KEYCHRON & WOOTING",
+    title: "Keychron Q1 Max QMK/VIA",
+    tagline: "ESTRUCTURA DE ALUMINIO CNC & CONEXIÓN INALÁMBRICA 2.4G",
+    desc: "Montaje con doble Gasket, interruptores mecánicos pre-lubricados y compatibilidad total con QMK/VIA para remapeo de teclas.",
+    price: "$219.99",
+    img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&q=80&w=800",
+    prodId: "kb-1"
+  },
+  "Mouse": {
+    tag: "<i data-lucide='mouse'></i> MOUSE GAMING ULTRA-LIGEROS",
+    brand: "LOGITECH & RAZER",
+    title: "Logitech G PRO X SUPERLIGHT 2",
+    tagline: "PESO ULTRA-LIGERO DE 60 GRAMOS Y SENSOR HERO 2",
+    desc: "Ícono indiscutible de Esports con interruptores híbridos LIGHTFORCE, tasa de sondeo nativa de 4000Hz y hasta 95 horas de batería.",
+    price: "$159.99",
+    img: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&q=80&w=800",
+    prodId: "mouse-1"
+  },
+  "Laptops": {
+    tag: "<i data-lucide='laptop'></i> PORTÁTILES DE ALTA GAMA",
+    brand: "ASUS ROG & LENOVO LEGION",
+    title: "ROG Strix SCAR 18 (2024)",
+    tagline: "PANTALLA 18\" MINI LED 240Hz CON RTX 4090",
+    desc: "Procesador Intel Core i9-14900HX, GPU NVIDIA RTX 4090 16GB, 32GB DDR5 y metal líquido Conductonaut Extreme en la CPU.",
+    price: "$3,699.99",
+    img: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&q=80&w=800",
+    prodId: "laptop-1"
+  }
+};
+
+let currentShowcaseProdId = "gpu-1";
+
+function updateHeroCategoryShowcase(cat) {
+  const data = CATEGORY_SHOWCASE_MAP[cat] || CATEGORY_SHOWCASE_MAP["Tarjetas Gráficas"];
+  currentShowcaseProdId = data.prodId;
+
+  const tagEl = document.getElementById("hero-category-tag");
+  const brandEl = document.getElementById("hero-brand-name");
+  const titleEl = document.getElementById("hero-product-title");
+  const taglineEl = document.getElementById("hero-tagline");
+  const descEl = document.getElementById("hero-description");
+  const priceEl = document.getElementById("hero-price-tag");
+  const imgEl = document.getElementById("hero-floating-img");
+
+  if (tagEl) tagEl.innerHTML = data.tag;
+  if (brandEl) brandEl.textContent = data.brand;
+  if (titleEl) titleEl.textContent = data.title;
+  if (taglineEl) taglineEl.textContent = data.tagline;
+  if (descEl) descEl.textContent = data.desc;
+  if (priceEl) priceEl.textContent = data.price;
+  if (imgEl) imgEl.src = data.img;
+
+  refreshLucideIcons();
+}
+
 function initHeroShowcase() {
   const btnBuy = document.getElementById("btn-hero-buy-now");
   const btnPreview = document.getElementById("btn-hero-preview-3d");
@@ -502,9 +599,9 @@ function initHeroShowcase() {
   if (btnBuy) {
     btnBuy.addEventListener("click", () => {
       const prods = getProductsList();
-      const flagshipGpu = prods.find(p => p.id === "gpu-1") || prods[0];
-      if (flagshipGpu) {
-        addToCart(flagshipGpu);
+      const flagship = prods.find(p => p.id === currentShowcaseProdId) || prods[0];
+      if (flagship) {
+        addToCart(flagship);
       }
     });
   }
@@ -512,12 +609,21 @@ function initHeroShowcase() {
   if (btnPreview) {
     btnPreview.addEventListener("click", () => {
       const prods = getProductsList();
-      const flagshipGpu = prods.find(p => p.id === "gpu-1") || prods[0];
-      if (flagshipGpu) {
-        openProductModal(flagshipGpu);
+      const flagship = prods.find(p => p.id === currentShowcaseProdId) || prods[0];
+      if (flagship) {
+        openProductModal(flagship);
       }
     });
   }
+
+  document.querySelectorAll(".btn-promo-action").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const cat = btn.dataset.cat;
+      if (cat) {
+        selectCategory(cat);
+      }
+    });
+  });
 }
 
 if (document.readyState === "loading") {
@@ -602,6 +708,20 @@ function initNavigation() {
   }
 }
 
+function selectCategory(cat) {
+  state.activeCategory = cat;
+  document.querySelectorAll(".category-pill").forEach(p => {
+    if (p.dataset.cat === cat) {
+      p.classList.add("active");
+    } else {
+      p.classList.remove("active");
+    }
+  });
+  updateHeroCategoryShowcase(cat);
+  renderCatalog();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
 function initCategories() {
   const container = document.getElementById("categories-container");
   if (!container) return;
@@ -611,6 +731,7 @@ function initCategories() {
   CATEGORIES.forEach(cat => {
     const pill = document.createElement("button");
     pill.className = `category-pill ${cat === state.activeCategory ? "active" : ""}`;
+    pill.dataset.cat = cat;
     let iconName = "grid";
 
     switch (cat) {
@@ -626,14 +747,13 @@ function initCategories() {
     pill.innerHTML = `<i data-lucide="${iconName}"></i> ${cat} <span style="opacity: 0.6; font-size: 11px;">${getCategoryCount(cat)}</span>`;
 
     pill.addEventListener("click", () => {
-      state.activeCategory = cat;
-      document.querySelectorAll(".category-pill").forEach(p => p.classList.remove("active"));
-      pill.classList.add("active");
-      renderCatalog();
+      selectCategory(cat);
     });
 
     container.appendChild(pill);
   });
+
+  updateHeroCategoryShowcase(state.activeCategory);
 }
 
 function getCategoryCount(cat) {

@@ -83,21 +83,27 @@
 
     <!-- VISTA 1: CATÁLOGO DE PRODUCTOS -->
     <section id="view-catalog" class="view active">
-      <!-- HERO SHOWCASE NIKE/TECH LUXURY STYLE WITH LIQUID GLASS -->
+      <!-- HERO SHOWCASE CATEGORY DYNAMIC (ESTILO IMAGEN DE REFERENCIA) -->
       <div class="hero-showcase-container liquid-glass">
+        <div class="hero-trust-badges-top">
+          <div class="trust-pill"><i data-lucide="truck"></i> Envío Gratis a Ecuador</div>
+          <div class="trust-pill"><i data-lucide="shield-check"></i> 100% Garantía Oficial</div>
+          <div class="trust-pill"><i data-lucide="rotate-ccw"></i> Devolución 14 Días</div>
+        </div>
+
         <div class="hero-showcase-content">
-          <div class="hero-brand-badge">
-            <i data-lucide="zap"></i> FLAGSHIP ITEM 2026
+          <div class="hero-brand-badge" id="hero-category-tag">
+            <i data-lucide="zap"></i> TARJETAS GRÁFICAS DE ÉLITE
           </div>
-          <h1 class="hero-main-brand">PC MASTERS</h1>
-          <h2 class="hero-product-title">GeForce RTX 4090</h2>
-          <div class="hero-tagline">DOMINA CADA FOTOGRAMA CON POTENCIA EXTREMA</div>
-          <p class="hero-description">
-            Arquitectura NVIDIA Ada Lovelace con 24GB GDDR6X, DLSS 3.5 y Ray Tracing de 3ª Gen. Estabilidad térmica de competición y rendimiento multitarea supremo.
+          <h1 class="hero-main-brand" id="hero-brand-name">NVIDIA & AMD</h1>
+          <h2 class="hero-product-title" id="hero-product-title">GeForce RTX 4090 / 5090</h2>
+          <div class="hero-tagline" id="hero-tagline">DOMINA CADA FOTOGRAMA CON POTENCIA SUPREMA</div>
+          <p class="hero-description" id="hero-description">
+            Arquitectura Ada Lovelace con 24GB GDDR6X, DLSS 3.5 y Ray Tracing de 3ª Gen. Estabilidad térmica de competición y rendimiento multitarea para creadores y gamers.
           </p>
 
           <div class="hero-purchase-row">
-            <div class="hero-price-tag">$1,899.99</div>
+            <div class="hero-price-tag" id="hero-price-tag">$1,899.99</div>
             <button class="btn-hero-cta" id="btn-hero-buy-now">
               <i data-lucide="shopping-bag"></i> COMPRAR AHORA
             </button>
@@ -114,7 +120,7 @@
             <div class="aura-ring ring-2"></div>
             <div class="aura-ring ring-3"></div>
           </div>
-          <img src="https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=800" alt="NVIDIA RTX 4090" class="hero-floating-img">
+          <img src="https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=800" alt="Hardware de Elite" id="hero-floating-img" class="hero-floating-img">
         </div>
       </div>
 
@@ -141,8 +147,76 @@
       <div class="products-grid" id="products-grid">
       </div>
 
-      <!-- SECCIÓN 01, 02, 03: FEATURE SPOTLIGHTS (INSPIRADO EN LAS IMÁGENES DE REFERENCIA) -->
-      <div class="tech-spotlights-grid" style="margin-top: 48px;">
+      <!-- SECCIÓN DE 3 BANNERS PROMOCIONALES DE CATEGORÍA (INSPIRADO EN LA IMAGEN) -->
+      <div class="promo-banners-grid" style="margin-top: 40px;">
+        <div class="promo-banner-card lime-accent">
+          <div class="promo-content">
+            <span class="promo-tag">CATEGORÍA TOP</span>
+            <h3>TARJETAS GRÁFICAS</h3>
+            <p>Máximo rendimiento Ray Tracing 4K</p>
+            <button class="btn-promo-action" data-cat="Tarjetas Gráficas">Explorar Categoría &rarr;</button>
+          </div>
+          <img src="https://images.unsplash.com/photo-1591488320449-011701bb6704?auto=format&fit=crop&q=80&w=400" alt="Tarjetas Gráficas">
+        </div>
+
+        <div class="promo-banner-card dark-accent">
+          <div class="promo-content">
+            <span class="promo-tag">POTENCIA PRO</span>
+            <h3>PROCESADORES</h3>
+            <p>AMD Ryzen 7000 & Intel Core 14ª Gen</p>
+            <button class="btn-promo-action" data-cat="Procesadores">Explorar Categoría &rarr;</button>
+          </div>
+          <img src="https://images.unsplash.com/photo-1591799264318-7e6ef8ddb7ea?auto=format&fit=crop&q=80&w=400" alt="Procesadores">
+        </div>
+
+        <div class="promo-banner-card dark-accent">
+          <div class="promo-content">
+            <span class="promo-tag">PORTÁTILES GAMING</span>
+            <h3>LAPTOPS & GEAR</h3>
+            <p>ASUS ROG, Lenovo Legion & Razer</p>
+            <button class="btn-promo-action" data-cat="Laptops">Explorar Categoría &rarr;</button>
+          </div>
+          <img src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&q=80&w=400" alt="Laptops">
+        </div>
+      </div>
+
+      <!-- BARRA INFERIOR DE 4 GARANTÍAS (IGUAL A LA IMAGEN DE REFERENCIA) -->
+      <div class="trust-features-bar liquid-glass" style="margin-top: 36px; padding: 24px 32px;">
+        <div class="trust-feature-item">
+          <i data-lucide="package" style="color: var(--primary-neon); width: 24px; height: 24px;"></i>
+          <div>
+            <strong>Catálogo Directo de Marcas</strong>
+            <p style="font-size: 12px; color: var(--text-muted);">Modelos top y componentes originales</p>
+          </div>
+        </div>
+
+        <div class="trust-feature-item">
+          <i data-lucide="percent" style="color: var(--primary-neon); width: 24px; height: 24px;"></i>
+          <div>
+            <strong>Precios Transparentes</strong>
+            <p style="font-size: 12px; color: var(--text-muted);">Sin cargos ni comisiones ocultas</p>
+          </div>
+        </div>
+
+        <div class="trust-feature-item">
+          <i data-lucide="shield-check" style="color: var(--primary-neon); width: 24px; height: 24px;"></i>
+          <div>
+            <strong>Garantía de Fábrica</strong>
+            <p style="font-size: 12px; color: var(--text-muted);">Soporte y respaldo 100% directo</p>
+          </div>
+        </div>
+
+        <div class="trust-feature-item">
+          <i data-lucide="headphones" style="color: var(--primary-neon); width: 24px; height: 24px;"></i>
+          <div>
+            <strong>Atención y Soporte 24/7</strong>
+            <p style="font-size: 12px; color: var(--text-muted);">Asesoría experta en Ecuador</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 01, 02, 03: FEATURE SPOTLIGHTS -->
+      <div class="tech-spotlights-grid" style="margin-top: 36px;">
         <div class="spotlight-card liquid-glass">
           <div class="spotlight-num">01</div>
           <div class="spotlight-content">
