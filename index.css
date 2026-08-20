@@ -594,6 +594,133 @@ main#app-content {
   border-color: var(--primary-neon);
 }
 
+/* ANIMATED STAGGERED PRODUCT CARDS & FAVORITES */
+@keyframes cardPopIn {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.products-grid .product-card {
+  animation: cardPopIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: var(--primary-neon);
+  box-shadow: 0 16px 36px rgba(0, 255, 135, 0.22);
+}
+
+.card-tag-badge {
+  position: absolute;
+  top: 12px;
+  right: 48px;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+  color: #050806;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  border-radius: 12px;
+  z-index: 3;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.btn-card-favorite {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background: rgba(5, 8, 6, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+  transition: all 0.25s ease;
+}
+
+.btn-card-favorite:hover, .btn-card-favorite.active {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #ef4444;
+  transform: scale(1.15);
+}
+
+.btn-card-favorite.active i {
+  fill: #ef4444;
+}
+
+/* FEATURE SPOTLIGHTS GRID (01, 02, 03) STYLES */
+.tech-spotlights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.spotlight-card {
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 260px;
+  position: relative;
+  transition: all 0.35s ease;
+}
+
+.spotlight-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--primary-neon);
+  box-shadow: 0 20px 40px rgba(0, 255, 135, 0.18);
+}
+
+.spotlight-num {
+  font-size: 48px;
+  font-weight: 900;
+  font-family: 'Outfit', sans-serif;
+  color: rgba(0, 255, 135, 0.35);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.spotlight-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.spotlight-desc {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.spotlight-img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-top: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.4s ease;
+}
+
+.spotlight-card:hover .spotlight-img {
+  transform: scale(1.03);
+}
+
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));

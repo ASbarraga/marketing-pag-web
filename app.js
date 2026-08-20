@@ -706,9 +706,10 @@ function renderCatalog() {
     return;
   }
 
-  filtered.forEach(prod => {
+  filtered.forEach((prod, idx) => {
     const card = document.createElement("div");
-    card.className = "product-card";
+    card.className = "product-card liquid-glass";
+    card.style.animationDelay = `${idx * 0.04}s`;
 
     const fullStars = Math.floor(prod.rating || 5);
     let starsHtml = "";
@@ -720,22 +721,32 @@ function renderCatalog() {
       }
     }
 
+    let badgeText = "NOVEDAD";
+    if (prod.reviewsCount > 200) badgeText = "🔥 TOP VENTAS";
+    else if (prod.price > 1000) badgeText = "👑 FLAGSHIP";
+    else if (prod.stock <= 5) badgeText = "⚡ ÚLTIMAS UNIDADES";
+
     card.innerHTML = `
       <div class="card-img-container">
         <span class="card-category-badge">${prod.category}</span>
+        <span class="card-tag-badge">${badgeText}</span>
+        <button class="btn-card-favorite" title="Agregar a Favoritos" data-id="${prod.id}">
+          <i data-lucide="heart" style="width:16px; height:16px;"></i>
+        </button>
         <img src="${prod.image}" alt="${prod.name}" loading="lazy">
       </div>
       <div class="card-body">
         <h3 class="card-title">${prod.name}</h3>
         <div class="card-rating">
           <div class="stars">${starsHtml}</div>
-          <span>(${prod.reviewsCount})</span>
+          <span style="font-weight:700; color:var(--primary-neon);">${prod.rating || 5.0}</span>
+          <span style="opacity:0.6;">(${prod.reviewsCount})</span>
         </div>
         <div class="card-specs-mini">${getMiniSpecs(prod)}</div>
         <div class="card-footer">
           <span class="card-price">$${prod.price.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
           <div style="display: flex; gap: 6px;">
-            <button class="btn-detail-card" title="Ver Detalle" data-id="${prod.id}">
+            <button class="btn-detail-card" title="Ver Vista Previa 3D" data-id="${prod.id}">
               <i data-lucide="eye"></i>
             </button>
             <button class="btn-add-cart" data-id="${prod.id}">
@@ -745,6 +756,14 @@ function renderCatalog() {
         </div>
       </div>
     `;
+
+    card.querySelector(".btn-card-favorite").addEventListener("click", (e) => {
+      e.stopPropagation();
+      const btn = card.querySelector(".btn-card-favorite");
+      btn.classList.toggle("active");
+      const isFav = btn.classList.contains("active");
+      showToast(isFav ? `❤️ ¡${prod.name} guardado en tus Favoritos!` : `Removed de Favoritos`);
+    });
 
     card.querySelector(".btn-add-cart").addEventListener("click", () => {
       addToCart(prod);
