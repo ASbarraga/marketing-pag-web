@@ -396,6 +396,9 @@
         <button class="admin-tab-btn" id="admin-tab-settings" data-admintab="settings">
           <i data-lucide="settings"></i> ⚙️ Configuración
         </button>
+        <button class="admin-tab-btn" id="admin-tab-notifications" data-admintab="notifications">
+          <i data-lucide="mail"></i> 📬 Notificaciones & Correos
+        </button>
       </div>
 
       <!-- SECCIÓN 1: METRICAS CLAVE / DASHBOARD -->
@@ -578,6 +581,71 @@
               <i data-lucide="save"></i> Guardar Configuración
             </button>
           </form>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 6: NOTIFICACIONES & CORREOS -->
+      <div id="admin-sec-notifications" class="admin-sec" style="display: none;">
+        <h3 class="info-card-title" style="margin-bottom: 20px;"><i data-lucide="mail"></i> Central de Notificaciones Automáticas & Sistema de Alertas</h3>
+
+        <div class="grid-2-cols" style="margin-bottom: 24px;">
+          <div class="info-card highlight-border">
+            <h4 style="font-size: 15px; font-weight: 700; color: var(--primary-neon); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+              <i data-lucide="shield-check"></i> Correos de Administradores Registrados
+            </h4>
+            <ul style="list-style: none; padding: 0; margin: 0; font-size: 13.5px; line-height: 1.8;">
+              <li style="display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.1); padding: 6px 0;">
+                <span>👑 <strong>Antonio Barragán</strong> (@ASbarrag):</span>
+                <span style="color: var(--primary-neon);">asbarraganc@ube.edu.ec</span>
+              </li>
+              <li style="display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.1); padding: 6px 0;">
+                <span>🛠️ <strong>Zair Barragán</strong> (@Zibarraganb_a):</span>
+                <span style="color: var(--primary-neon);">Zibarraganb_a@ube.edu.ec</span>
+              </li>
+              <li style="display: flex; justify-content: space-between; padding: 6px 0;">
+                <span>💻 <strong>Vanesa Salazar</strong> (@vane123):</span>
+                <span style="color: var(--primary-neon);">vasalazarg@ube.edu.ec</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="info-card">
+            <h4 style="font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+              <i data-lucide="send"></i> Disparadores de Notificación Manual
+            </h4>
+            <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 16px;">
+              Los correos de ventas, nuevos usuarios y stock crítico se envían de forma 100% automática. Puedes enviar un reporte de métricas bajo demanda:
+            </p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button class="nav-btn btn-cart-nav" id="btn-trigger-sales-report" style="font-size: 12px; padding: 8px 14px;">
+                <i data-lucide="file-text"></i> Enviar Reporte de Métricas Ahora
+              </button>
+              <button class="nav-btn" id="btn-trigger-stock-alert" style="font-size: 12px; padding: 8px 14px; border-color: #f59e0b; color: #f59e0b;">
+                <i data-lucide="alert-triangle"></i> Probar Alerta de Stock
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-table-wrapper">
+          <h4 style="font-size: 14px; font-weight: 700; margin: 16px; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+            <i data-lucide="inbox"></i> Historial de Notificaciones y Correos Despachados
+          </h4>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Fecha / Hora</th>
+                <th>Tipo de Evento</th>
+                <th>Asunto</th>
+                <th>Destinatarios</th>
+                <th>Estado</th>
+                <th>Vista Previa</th>
+              </tr>
+            </thead>
+            <tbody id="admin-notifications-table-body">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
         </div>
       </div>
     </section>

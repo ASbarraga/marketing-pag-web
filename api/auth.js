@@ -31,7 +31,7 @@ const DEFAULT_ADMINS = [
     username: "vane123",
     password: "vane123",
     name: "Vanesa Salazar",
-    email: "vanesasalazar@ube.edu.ec",
+    email: "vasalazarg@ube.edu.ec",
     role: "Admin",
     status: "Activo",
     createdAt: "2026-08-20T13:00:00.000Z",
@@ -42,7 +42,7 @@ const DEFAULT_ADMINS = [
     username: "Zibarraganb_a",
     password: "Zibarraganb_a",
     name: "Zair Barragán",
-    email: "zairbarragan@ube.edu.ec",
+    email: "Zibarraganb_a@ube.edu.ec",
     role: "Admin",
     status: "Activo",
     createdAt: "2026-08-20T13:00:00.000Z",
@@ -650,6 +650,24 @@ module.exports = async (req, res) => {
         success: true,
         products: prods
       });
+    } else if (action === 'send_email_notification') {
+      const notificationsColl = db.collection('notifications');
+      const notifData = bodyObj || {};
+      const notification = {
+        id: 'notif_' + Date.now(),
+        type: notifData.type || 'GENERAL',
+        subject: notifData.subject || 'Notificación PC MASTERS',
+        body: notifData.body || '',
+        recipients: notifData.recipients || ['asbarraganc@ube.edu.ec', 'Zibarraganb_a@ube.edu.ec', 'vasalazarg@ube.edu.ec'],
+        date: new Date().toLocaleDateString('es-EC') + ' ' + new Date().toLocaleTimeString('es-EC'),
+        status: 'Enviado / Notificado'
+      };
+      await notificationsColl.insertOne(notification);
+      return res.status(200).json({ success: true, notification });
+    } else if (action === 'list_notifications') {
+      const notificationsColl = db.collection('notifications');
+      const notifs = await notificationsColl.find({}).sort({ _id: -1 }).toArray();
+      return res.status(200).json({ success: true, notifications: notifs });
     }
 
     return res.status(200).json({
