@@ -200,6 +200,118 @@ button {
   position: relative;
 }
 
+/* MINIMALIST BULB THEME TOGGLE BUTTON (LIQUID GLASS STYLE) */
+.theme-toggle-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(24, 24, 27, 0.75);
+  backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(204, 255, 0, 0.35);
+  color: var(--primary-neon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.theme-toggle-btn:hover {
+  transform: scale(1.12) rotate(15deg);
+  border-color: var(--primary-neon);
+  box-shadow: 0 0 24px rgba(204, 255, 0, 0.6);
+  background: rgba(204, 255, 0, 0.2);
+}
+
+.theme-toggle-btn i {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+/* MODO CLARO (LIGHT MODE THEME) WITH PRESERVED LIQUID GLASS */
+body.light-mode {
+  --bg-dark: #f1f3f6;
+  --bg-surface: #ffffff;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --bg-card-hover: #f8fafc;
+  
+  --border-color: rgba(0, 0, 0, 0.12);
+  --border-color-hover: rgba(101, 163, 13, 0.6);
+  
+  --primary-neon: #65a30d;
+  --primary-green: #84cc16;
+  --primary-gradient: linear-gradient(135deg, #ccff00 0%, #84cc16 100%);
+  --primary-glow: rgba(132, 204, 22, 0.3);
+  
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-dark: #ffffff;
+  
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.06);
+  --shadow-neon: 0 8px 24px rgba(132, 204, 22, 0.2);
+  --shadow-card: 0 12px 36px rgba(0, 0, 0, 0.08);
+
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+}
+
+body.light-mode header#main-header {
+  background: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+body.light-mode .liquid-glass {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(24px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
+}
+
+body.light-mode .theme-toggle-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(101, 163, 13, 0.4);
+  color: #65a30d;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .promo-banner-card.dark-accent {
+  background: rgba(255, 255, 255, 0.88);
+  color: #0f172a;
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .promo-banner-card.dark-accent h3,
+body.light-mode .promo-banner-card.dark-accent p {
+  color: #0f172a;
+}
+
+body.light-mode .spotlight-title {
+  color: #0f172a;
+}
+
+body.light-mode .trust-pill {
+  background: rgba(255, 255, 255, 0.92);
+  color: #0f172a;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+body.light-mode .trust-feature-item strong {
+  color: #0f172a;
+}
+
+body.light-mode .card-img-container {
+  background: #f8fafc;
+}
+
+body.light-mode .hero-product-title,
+body.light-mode .hero-main-brand {
+  color: #0f172a;
+}
+
 .nav-btn:hover, .nav-btn.active {
   background: rgba(0, 255, 135, 0.1);
   border-color: var(--primary-neon);

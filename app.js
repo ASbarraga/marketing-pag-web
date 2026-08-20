@@ -480,6 +480,7 @@ const CATEGORIES = [
 ];
 
 function initApp() {
+  initThemeToggle();
   initNavigation();
   initCategories();
   initSearchAndSort();
@@ -492,6 +493,25 @@ function initApp() {
   updateCartBadge();
   refreshLucideIcons();
   loadProductsFromBackend();
+}
+
+function initThemeToggle() {
+  const btn = document.getElementById("btn-theme-toggle");
+  const savedTheme = localStorage.getItem("pcm_theme");
+
+  if (savedTheme === "light") {
+    document.body.classList.add("light-mode");
+  }
+
+  if (btn) {
+    btn.addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+      const isLight = document.body.classList.contains("light-mode");
+      localStorage.setItem("pcm_theme", isLight ? "light" : "dark");
+      showToast(isLight ? "☀️ Modo Claro Activado" : "🌙 Modo Oscuro Activado");
+      refreshLucideIcons();
+    });
+  }
 }
 
 const CATEGORY_SHOWCASE_MAP = {
