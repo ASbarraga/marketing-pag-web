@@ -480,7 +480,7 @@ const CATEGORIES = [
   "Laptops"
 ];
 
-document.addEventListener("DOMContentLoaded", () => {
+function initApp() {
   initNavigation();
   initCategories();
   initSearchAndSort();
@@ -492,7 +492,13 @@ document.addEventListener("DOMContentLoaded", () => {
   updateCartBadge();
   refreshLucideIcons();
   loadProductsFromBackend();
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initApp);
+} else {
+  initApp();
+}
 
 function refreshLucideIcons() {
   if (window.lucide) {
