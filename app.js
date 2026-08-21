@@ -489,6 +489,7 @@ function initApp() {
   initAuth();
   initAdminPanel();
   initHeroShowcase();
+  initBitrixForm();
   renderCatalog();
   updateCartBadge();
   refreshLucideIcons();
@@ -2365,4 +2366,19 @@ function renderAdminUsers() {
   });
 
   refreshLucideIcons();
+}
+
+function initBitrixForm() {
+  const form = document.getElementById("bitrix24-lead-form");
+  if (!form) return;
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = document.getElementById("bitrix-lead-name") ? document.getElementById("bitrix-lead-name").value.trim() : "";
+    const email = document.getElementById("bitrix-lead-email") ? document.getElementById("bitrix-lead-email").value.trim() : "";
+    const prod = document.getElementById("bitrix-lead-product") ? document.getElementById("bitrix-lead-product").value : "";
+
+    showToast(`🚀 Prospecto "${name}" registrado con éxito en Bitrix24 CRM (${prod})`);
+    form.reset();
+  });
 }

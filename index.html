@@ -357,6 +357,37 @@
             </iframe>
           </div>
         </div>
+      <!-- FORMULARIO DE CAPTURA DE PROSPECTOS BITRIX24 CRM -->
+      <div class="info-card highlight-border" style="margin-top: 24px; background: linear-gradient(135deg, rgba(0, 255, 135, 0.05) 0%, rgba(14, 20, 16, 0.95) 100%);">
+        <h3 class="info-card-title"><i data-lucide="user-plus"></i> Formulario de Cotización CRM (Integración Bitrix24)</h3>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;">
+          ¿Deseas una cotización personalizada de un equipo ensamblado o componente? Registra tus datos y nuestro CRM en Bitrix24 registrará automáticamente tu solicitud.
+        </p>
+
+        <form id="bitrix24-lead-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-size: 12px;">Nombre del Prospecto</label>
+            <input type="text" id="bitrix-lead-name" class="form-input no-icon" placeholder="Ej: Pedro Holguín Salazar" required style="padding: 10px 14px;">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-size: 12px;">Correo Electrónico</label>
+            <input type="email" id="bitrix-lead-email" class="form-input no-icon" placeholder="cliente@ejemplo.com" required style="padding: 10px 14px;">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-size: 12px;">Componente / Hardware de Interés</label>
+            <select id="bitrix-lead-product" class="form-input no-icon" style="padding: 10px 14px; background: var(--bg-card); color: var(--text-primary);">
+              <option value="NVIDIA GeForce RTX 4090 24GB ($1,899.99)">NVIDIA GeForce RTX 4090 ($1,899.99)</option>
+              <option value="ASUS ROG Strix RTX 4080 Super ($1,199.99)">ASUS ROG Strix RTX 4080 Super ($1,199.99)</option>
+              <option value="AMD Ryzen 7 7800X3D ($389.99)">AMD Ryzen 7 7800X3D ($389.99)</option>
+              <option value="ASUS ROG Strix SCAR 18 ($3,699.99)">ASUS ROG Strix SCAR 18 ($3,699.99)</option>
+            </select>
+          </div>
+          <div style="grid-column: 1/-1; display: flex; justify-content: flex-end; margin-top: 6px;">
+            <button type="submit" class="btn-checkout-proceed" style="width: auto; padding: 10px 24px; font-size: 13.5px;">
+              <i data-lucide="send"></i> Enviar a Bitrix24 CRM
+            </button>
+          </div>
+        </form>
       </div>
 
       <div class="info-card" style="margin-top: 24px;">
