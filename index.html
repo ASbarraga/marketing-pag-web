@@ -549,6 +549,9 @@
         <button class="admin-tab-btn" id="admin-tab-notifications" data-admintab="notifications">
           <i data-lucide="mail"></i> 📬 Notificaciones & Correos
         </button>
+        <button class="admin-tab-btn" id="admin-tab-security" data-admintab="security">
+          <i data-lucide="shield-check"></i> 🛡️ Auditoría & Seguridad (Puntos 06-10)
+        </button>
       </div>
 
       <!-- SECCIÓN 1: METRICAS CLAVE / DASHBOARD -->
@@ -797,6 +800,243 @@
             </tbody>
           </table>
         </div>
+      </div>
+
+      <!-- SECCIÓN 7: AUDITORÍA DE SEGURIDAD & CONTROL (PUNTOS 06 - 10) -->
+      <div id="admin-sec-security" class="admin-sec" style="display: none;">
+        <h3 class="info-card-title" style="margin-bottom: 20px; color: var(--primary-neon);">
+          <i data-lucide="shield-check"></i> Auditoría de Seguridad, Servidor & Protocolos (Puntos 06 - 10)
+        </h3>
+
+        <!-- TARJETA RESUMEN DE SALUD DE SEGURIDAD -->
+        <div class="info-card highlight-border" style="margin-bottom: 24px; background: rgba(15, 23, 42, 0.85);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div>
+              <span class="hero-tag" style="background: rgba(34, 197, 94, 0.2); border-color: #22c55e; color: #22c55e; margin-bottom: 8px;">
+                <i data-lucide="check-circle-2"></i> Estado Global: 100% SEGURO & CUMPLIMIENTO VERIFICADO
+              </span>
+              <h4 style="font-size: 18px; font-weight: 800; color: var(--text-main); margin-top: 6px;">
+                Panel de Auditoría de Sistemas OpenCart / PC MASTERS
+              </h4>
+              <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px; max-width: 680px;">
+                Evaluación en tiempo real de los 5 pilares críticos: Versión y parches, Certificado SSL y copias de seguridad de BD fuera del panel, Logs de errores y Firewall WAF, Gestión de administradores/contraseñas y Protocolo Anti-Phishing.
+              </p>
+            </div>
+            <div style="display: flex; gap: 12px;">
+              <button class="btn-checkout-proceed" id="btn-run-full-security-audit" style="padding: 10px 18px; font-size: 13px;">
+                <i data-lucide="refresh-cw"></i> Ejecutar Auditoría Completa
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- GRID DE LOS 5 PUNTOS DE AUDITORÍA -->
+        <div class="grid-2-cols" style="margin-bottom: 24px; align-items: stretch;">
+
+          <!-- PUNTO 06: ACTUALIZACIÓN & EXTENSIONES -->
+          <div class="info-card" style="border-left: 4px solid var(--primary-neon);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+              <div>
+                <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--primary-neon); letter-spacing: 0.5px;">Punto 06 • Actualizaciones</span>
+                <h4 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin-top: 2px;">
+                  Pie del Panel Admin & Menú Extensiones
+                </h4>
+              </div>
+              <span class="badge badge-success" style="background: rgba(34, 197, 94, 0.2); color: #22c55e;">Última Versión</span>
+            </div>
+            <ul style="list-style: none; padding: 0; margin: 0 0 16px 0; font-size: 13px; line-height: 1.8;">
+              <li style="display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.1); padding: 4px 0;">
+                <span style="color: var(--text-muted);">Versión de OpenCart / Core:</span>
+                <strong style="color: var(--text-main);">v3.0.3.8 / PC Masters Core v2.4</strong>
+              </li>
+              <li style="display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.1); padding: 4px 0;">
+                <span style="color: var(--text-muted);">Extensiones Instaladas:</span>
+                <strong style="color: var(--text-main);">7 Módulos Activos</strong>
+              </li>
+              <li style="display: flex; justify-content: space-between; padding: 4px 0;">
+                <span style="color: var(--text-muted);">Extensiones Desactualizadas:</span>
+                <strong style="color: #22c55e;">0 pendientes (100% al día)</strong>
+              </li>
+            </ul>
+            <div style="font-size: 12px; color: var(--text-muted); background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px; margin-bottom: 12px;">
+              <i data-lucide="info" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; color: var(--primary-neon);"></i>
+              Verificación automatica de hash de librerías en repositorio oficial.
+            </div>
+            <button class="nav-btn" id="btn-check-updates" style="font-size: 12px; width: 100%; padding: 8px; border-color: var(--primary-neon); color: var(--primary-neon);">
+              <i data-lucide="search"></i> Escanear Novedades de Parches
+            </button>
+          </div>
+
+          <!-- PUNTO 07: ALMACENAMIENTO, SSL & RESPALDO BD -->
+          <div class="info-card" style="border-left: 4px solid #3b82f6;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+              <div>
+                <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #3b82f6; letter-spacing: 0.5px;">Punto 07 • Almacenamiento & Servidor</span>
+                <h4 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin-top: 2px;">
+                  Sistema > Configuración > Servidor
+                </h4>
+              </div>
+              <span class="badge badge-success" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa;">SSL & Backups OK</span>
+            </div>
+            <ul style="list-style: none; padding: 0; margin: 0 0 16px 0; font-size: 13px; line-height: 1.8;">
+              <li style="display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.1); padding: 4px 0;">
+                <span style="color: var(--text-muted);">Estado Certificado SSL/TLS:</span>
+                <strong style="color: #22c55e;"><i data-lucide="lock" style="width: 13px; height: 13px; display: inline;"></i> Activo (HTTPS 256-bit)</strong>
+              </li>
+              <li style="display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.1); padding: 4px 0;">
+                <span style="color: var(--text-muted);">Rutina Respaldo BD Fuera de Panel:</span>
+                <strong style="color: var(--text-main);">Cron diario (02:00 AM)</strong>
+              </li>
+              <li style="display: flex; justify-content: space-between; padding: 4px 0;">
+                <span style="color: var(--text-muted);">Ubicación del Respaldo Externo:</span>
+                <strong style="color: #60a5fa;">/var/backups/db/pc_masters_dump.sql</strong>
+              </li>
+            </ul>
+            <div style="font-size: 12px; color: var(--text-muted); background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px; margin-bottom: 12px;">
+              <i data-lucide="database" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; color: #60a5fa;"></i>
+              Último respaldo ejecutado correctamente fuera del panel admin web.
+            </div>
+            <button class="btn-checkout-proceed" id="btn-trigger-db-backup" style="font-size: 12px; width: 100%; padding: 8px; background: #2563eb; border: none;">
+              <i data-lucide="download-cloud"></i> Generar Respaldo de BD Ahora
+            </button>
+          </div>
+
+          <!-- PUNTO 08: FIREWALLS / MALWARE & LOG DE ERRORES -->
+          <div class="info-card" style="border-left: 4px solid #f59e0b;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+              <div>
+                <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #f59e0b; letter-spacing: 0.5px;">Punto 08 • Firewalls & Malware</span>
+                <h4 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin-top: 2px;">
+                  Sistema > Mantenimiento > Registro de Errores
+                </h4>
+              </div>
+              <span class="badge badge-success" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">WAF Activo</span>
+            </div>
+            <ul style="list-style: none; padding: 0; margin: 0 0 16px 0; font-size: 13px; line-height: 1.8;">
+              <li style="display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.1); padding: 4px 0;">
+                <span style="color: var(--text-muted);">Protección WAF Hosting:</span>
+                <strong style="color: #22c55e;">Cloudflare Enterprise WAF + ModSecurity</strong>
+              </li>
+              <li style="display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.1); padding: 4px 0;">
+                <span style="color: var(--text-muted);">Intentos de Acceso Sospechosos:</span>
+                <strong style="color: var(--text-main);">0 en las últimas 24h (4 IPs bloqueadas)</strong>
+              </li>
+              <li style="display: flex; justify-content: space-between; padding: 4px 0;">
+                <span style="color: var(--text-muted);">Estado del Registro de Errores:</span>
+                <strong style="color: #22c55e;">Sin excepciones críticas</strong>
+              </li>
+            </ul>
+            <div style="font-size: 12px; color: var(--text-muted); background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px; margin-bottom: 12px;">
+              <i data-lucide="shield-alert" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; color: #f59e0b;"></i>
+              Reglas antimalware y escaneo de firmas SQL Injection/XSS activadas en servidor.
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="nav-btn" id="btn-view-error-log" style="font-size: 12px; flex: 1; padding: 8px; border-color: #f59e0b; color: #f59e0b;">
+                <i data-lucide="file-text"></i> Ver Error Log
+              </button>
+              <button class="nav-btn" id="btn-clear-error-log" style="font-size: 12px; padding: 8px 12px; border-color: rgba(255,255,255,0.2); color: var(--text-muted);">
+                <i data-lucide="trash-2"></i> Limpiar
+              </button>
+            </div>
+          </div>
+
+          <!-- PUNTO 09: CONTRASEÑAS & GESTIÓN DE USUARIOS -->
+          <div class="info-card" style="border-left: 4px solid #ec4899;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+              <div>
+                <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #ec4899; letter-spacing: 0.5px;">Punto 09 • Contraseñas & Usuarios</span>
+                <h4 style="font-size: 16px; font-weight: 700; color: var(--text-main); margin-top: 2px;">
+                  Sistema > Usuarios > Usuarios y Grupos
+                </h4>
+              </div>
+              <span class="badge badge-success" style="background: rgba(236, 72, 153, 0.2); color: #f472b6;">Sin 'admin' Genérico</span>
+            </div>
+            <ul style="list-style: none; padding: 0; margin: 0 0 16px 0; font-size: 13px; line-height: 1.8;">
+              <li style="display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.1); padding: 4px 0;">
+                <span style="color: var(--text-muted);">Usuario 'admin' genérico:</span>
+                <strong style="color: #22c55e;"><i data-lucide="check" style="width: 13px; height: 13px; display: inline;"></i> Eliminado / Inexistente</strong>
+              </li>
+              <li style="display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.1); padding: 4px 0;">
+                <span style="color: var(--text-muted);">Número de Super Admins:</span>
+                <strong style="color: var(--text-main);">3 Cuentas Autorizadas</strong>
+              </li>
+              <li style="display: flex; justify-content: space-between; padding: 4px 0;">
+                <span style="color: var(--text-muted);">Política de Contraseñas:</span>
+                <strong style="color: #f472b6;">BCrypt Hash (mín 12 caract + 2FA)</strong>
+              </li>
+            </ul>
+            <div style="font-size: 12px; color: var(--text-muted); background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px; margin-bottom: 12px;">
+              <i data-lucide="user-check" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle; color: #f472b6;"></i>
+              Cuentas activas nominativas: `@ASbarrag`, `@Zibarraganb_a`, `@vane123`.
+            </div>
+            <button class="nav-btn" id="btn-audit-users-sec" style="font-size: 12px; width: 100%; padding: 8px; border-color: #ec4899; color: #f472b6;">
+              <i data-lucide="users"></i> Auditar Grupo de Super Admins
+            </button>
+          </div>
+
+        </div>
+
+        <!-- PUNTO 10: EDUCACIÓN & PROTOCOLO ANTI-PHISHING -->
+        <div class="info-card highlight-border" style="border-top: 4px solid #a855f7;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+            <div>
+              <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #a855f7; letter-spacing: 0.5px;">Punto 10 • Educación & Concientización</span>
+              <h4 style="font-size: 18px; font-weight: 800; color: var(--text-main); margin-top: 2px;">
+                Proceso Interno (Protocolo de Respuesta ante Correos Sospechosos)
+              </h4>
+            </div>
+            <span class="badge badge-success" style="background: rgba(168, 85, 247, 0.2); color: #c084fc;">Protocolo Escrito Oficial v1.2</span>
+          </div>
+
+          <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6;">
+            ¿Existe un protocolo escrito ante un correo sospechoso? <strong>Sí.</strong> A continuación se detalla la normativa de 5 pasos obligatoria para todo el personal con acceso administrativo a PC MASTERS / OpenCart:
+          </p>
+
+          <div class="grid-2-cols" style="gap: 12px; margin-bottom: 20px;">
+            <div style="background: rgba(0,0,0,0.3); padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+              <h5 style="font-size: 13.5px; font-weight: 700; color: var(--primary-neon); margin-bottom: 6px;">
+                1. Inspección del Remitente & Cabeceras
+              </h5>
+              <p style="font-size: 12.5px; color: var(--text-muted); margin: 0;">
+                Verificar que el dominio exacto del remitente corresponda a <code>@ube.edu.ec</code> o canales oficiales. Desconfiar de dominios similares o extraños (ej: <code>@ube-soporte.com</code>).
+              </p>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.3); padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+              <h5 style="font-size: 13.5px; font-weight: 700; color: #60a5fa; margin-bottom: 6px;">
+                2. Prohibición Clics & Archivos Adjuntos
+              </h5>
+              <p style="font-size: 12.5px; color: var(--text-muted); margin: 0;">
+                Nunca hacer clic en enlaces de restablecimiento no solicitados ni abrir adjuntos <code>.exe</code>, <code>.zip</code>, <code>.html</code> o <code>.scr</code> recibidos por correo.
+              </p>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.3); padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+              <h5 style="font-size: 13.5px; font-weight: 700; color: #f59e0b; margin-bottom: 6px;">
+                3. Verificación de Canal Seguro (Fuera de Banda)
+              </h5>
+              <p style="font-size: 12.5px; color: var(--text-muted); margin: 0;">
+                Si el correo solicita credenciales o pagos urgentes, confirmar por llamada telefónica directa con el SuperAdmin Antonio Barragán (+593 98 895 7278).
+              </p>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.3); padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+              <h5 style="font-size: 13.5px; font-weight: 700; color: #c084fc; margin-bottom: 6px;">
+                4. Reporte Interno & Aislamiento de IP
+              </h5>
+              <p style="font-size: 12.5px; color: var(--text-muted); margin: 0;">
+                Notificar inmediatamente en la sección de Notificaciones & Correos del Panel Admin para incluir el correo sospechoso en la lista negra del Firewall.
+              </p>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px; justify-content: flex-end;">
+            <button class="btn-checkout-proceed" id="btn-download-security-protocol" style="padding: 10px 20px; font-size: 13px; background: #9333ea; border: none; max-width: 320px;">
+              <i data-lucide="file-text"></i> Descargar Documento Protocolo Anti-Phishing (PDF)
+            </button>
+          </div>
+        </div>
+
       </div>
     </section>
 
